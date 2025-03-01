@@ -35,7 +35,6 @@ Isso abrirá o **Expo Developer Tools**, permitindo rodar o app no simulador/emu
 - **Expo**
 - **TypeScript**
 - **Supabase**
-- **ShadcnUI**
 
 ## 🚀 Funcionalidades
 
@@ -44,7 +43,6 @@ Isso abrirá o **Expo Developer Tools**, permitindo rodar o app no simulador/emu
 - Cadastro e login de usuários
 - Publicação de produtos para venda
 - Integração com banco de dados via **Supabase**
-- Interface moderna e responsiva com **ShadcnUI**
 
 ## 🤝 Contribuição
 
