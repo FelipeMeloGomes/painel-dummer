@@ -17,6 +17,7 @@ Antes de começar, certifique-se de ter o **Node.js** instalado em sua máquina.
 3. Instale as dependências:
    ```sh
    npm install
+   npm install expo-asset
    ```
 
 ## ▶️ Executando o projeto
