@@ -4,6 +4,7 @@ import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Button, StyleSheet, Text, View } from "react-native";
 import colors from "@/constants/colors";
+import DownloadButton from "../../components/Download/page";
 
 export default function Profile() {
   const { setAuth, user } = useAuth();
@@ -78,6 +79,7 @@ export default function Profile() {
           </Link>
         )}
         <Button title="Sair" onPress={handleSignout} />
+        <DownloadButton />
       </View>
     </View>
   );
