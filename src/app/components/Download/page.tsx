@@ -1,3 +1,4 @@
+import colors from "@/constants/colors";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import { useState } from "react";
@@ -13,7 +14,7 @@ import {
 
 const PDF_NAME = "painel.apk";
 const PDF_URI =
-  "https://download1478.mediafire.com/3wuqg2j3bfmgZn1QxKVltDmM7Fl7Ah4e6RHk5plyiFfiuKIKoZuyg5F-E_N001FKWoPXR1rsP2vvcTJsge9stMX2L2pbwzUKygMwbiIoARE4PfkGCgTymqPXuNz3UhIJBaP7_HPgRRLbSD-B0A_Yk60AgFM6Sf5Fo111PZ5MoKXBEA/jmjnafgt9serk6z/base.apk";
+  "https://uhteeunwizzmxlmjaidz.supabase.co/storage/v1/object/sign/apk/painel.apk?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhcGsvcGFpbmVsLmFwayIsImlhdCI6MTc0MTM2MzA2NCwiZXhwIjoxNzcyODk5MDY0fQ.D2nGGA6DHDhCUqFeOmq7q7CAl8BtsPGgtUVjIf6FWZA";
 
 export default function DownloadButton() {
   const [progressPercentage, setProgressPercentage] = useState(0);
@@ -72,10 +73,9 @@ export default function DownloadButton() {
 
   const styles = StyleSheet.create({
     button: {
-      backgroundColor: "#6a5acd",
-      paddingVertical: 15,
-      paddingHorizontal: 30,
-      borderRadius: 5,
+      backgroundColor: colors.zinc,
+      padding: 10,
+      borderRadius: 8,
       alignItems: "center",
       justifyContent: "center",
     },

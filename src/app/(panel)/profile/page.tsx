@@ -1,9 +1,9 @@
+import colors from "@/constants/colors";
 import { useAuth } from "@/src/context/AuthContext";
 import { supabase } from "@/src/lib/supabase";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Button, StyleSheet, Text, View } from "react-native";
-import colors from "@/constants/colors";
 import DownloadButton from "../../components/Download/page";
 
 export default function Profile() {
@@ -78,8 +78,8 @@ export default function Profile() {
             <Text>Cadastrar USUÁRIO</Text>
           </Link>
         )}
-        <Button title="Sair" onPress={handleSignout} />
         <DownloadButton />
+        <Button title="Sair" onPress={handleSignout} />
       </View>
     </View>
   );
@@ -100,6 +100,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: "100%",
     borderRadius: 8,
+    color: colors.white
   },
   header: {
     paddingLeft: 14,
