@@ -12,63 +12,113 @@ import {
   View,
 } from "react-native";
 
-const PDF_NAME = "painel.apk";
-const PDF_URI =
-  "https://uhteeunwizzmxlmjaidz.supabase.co/storage/v1/object/sign/apk/painel.apk?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhcGsvcGFpbmVsLmFwayIsImlhdCI6MTc0MTM2MzA2NCwiZXhwIjoxNzcyODk5MDY0fQ.D2nGGA6DHDhCUqFeOmq7q7CAl8BtsPGgtUVjIf6FWZA";
+const APK_NAME = "painel.apk";
+const APK_URL =
+  "https://uhteeunwizzmxlmjaidz.supabase.co/storage/v1/object/sign/apk/painel.apk?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhcGsvcGFpbmVsLmFwayIsImlhdCI6MTc0MTM5OTAyMSwiZXhwIjoxNzcyOTM1MDIxfQ.KgzGxMiqtzDYE6W6oP6V_h9EBr5wI9LoDuUgy-E9oQg";
 
 export default function DownloadButton() {
   const [progressPercentage, setProgressPercentage] = useState(0);
   const [isDownloading, setIsDownloading] = useState(false);
 
+  async function handleDownload() {
+    try {
+      setIsDownloading(true);
+      const fileUri = getDownloadPath();
+      logMessage("Iniciando download para:", fileUri);
+
+      const downloadResponse = await startDownload(fileUri);
+      if (!downloadResponse?.uri)
+        throw new Error("Download falhou: URI de resposta vazia.");
+
+      logMessage("Download concluído:", downloadResponse.uri);
+      resetDownloadState();
+      await installAPK(downloadResponse.uri);
+    } catch (error) {
+      handleError(
+        "Erro no download",
+        error,
+        "Erro ao baixar",
+        "Não foi possível baixar o APK.",
+      );
+    }
+  }
+
   function onDownloadProgress({
     totalBytesWritten,
     totalBytesExpectedToWrite,
   }: FileSystem.DownloadProgressData) {
-    const percentage = (totalBytesWritten / totalBytesExpectedToWrite) * 100;
+    const percentage = calculateProgress(
+      totalBytesWritten,
+      totalBytesExpectedToWrite,
+    );
+    logMessage(`Progresso do download: ${percentage.toFixed(2)}%`);
     setProgressPercentage(percentage);
   }
 
-  async function handleDownload() {
-    try {
-      setIsDownloading(true);
-
-      const fileUri = FileSystem.documentDirectory + PDF_NAME;
-
-      const downloadResumable = FileSystem.createDownloadResumable(
-        PDF_URI,
-        fileUri,
-        {},
-        onDownloadProgress,
+  async function installAPK(uri: string) {
+    if (Platform.OS !== "android")
+      return Alert.alert(
+        "Aviso",
+        "A instalação automática só funciona no Android.",
       );
 
-      const downloadResponse = await downloadResumable.downloadAsync();
+    try {
+      logMessage("Iniciando instalação do APK:", uri);
+      if (!(await fileExists(uri))) throw new Error("APK não encontrado.");
 
-      if (downloadResponse?.uri) {
-        await fileSave(downloadResponse.uri, PDF_NAME);
-        setProgressPercentage(0);
-        setIsDownloading(false);
-      }
+      await Sharing.shareAsync(uri, {
+        mimeType: "application/vnd.android.package-archive",
+      });
     } catch (error) {
-      Alert.alert("Download", "Não foi possível realizar o download.");
-      console.error(error);
+      handleError(
+        "Erro ao iniciar instalação",
+        error,
+        "Erro",
+        "Não foi possível iniciar a instalação do APK.",
+      );
     }
   }
 
-  async function fileSave(uri: string, filename: string) {
-    if (Platform.OS === "android") {
-      const directoryUri = FileSystem.cacheDirectory + filename;
-      const base64File = await FileSystem.readAsStringAsync(uri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
+  function getDownloadPath(): string {
+    return FileSystem.documentDirectory + APK_NAME;
+  }
 
-      await FileSystem.writeAsStringAsync(directoryUri, base64File, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
+  async function startDownload(fileUri: string) {
+    const downloadResumable = FileSystem.createDownloadResumable(
+      APK_URL,
+      fileUri,
+      {},
+      onDownloadProgress,
+    );
+    return await downloadResumable.downloadAsync();
+  }
 
-      await Sharing.shareAsync(directoryUri);
-    } else {
-      Sharing.shareAsync(uri);
-    }
+  function calculateProgress(written: number, expected: number): number {
+    return (written / expected) * 100;
+  }
+
+  async function fileExists(uri: string): Promise<boolean> {
+    const fileInfo = await FileSystem.getInfoAsync(uri);
+    return fileInfo.exists;
+  }
+
+  function resetDownloadState() {
+    setProgressPercentage(0);
+    setIsDownloading(false);
+  }
+
+  function logMessage(...messages: any[]) {
+    console.log(...messages);
+  }
+
+  function handleError(
+    logPrefix: string,
+    error: any,
+    alertTitle: string,
+    alertMessage: string,
+  ) {
+    console.error(logPrefix, error);
+    Alert.alert(alertTitle, error.message || alertMessage);
   }
 
   const styles = StyleSheet.create({
