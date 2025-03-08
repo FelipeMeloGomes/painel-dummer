@@ -1,4 +1,3 @@
-import colors from "@/constants/colors";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import { useState } from "react";
@@ -6,11 +5,9 @@ import {
   ActivityIndicator,
   Alert,
   Platform,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+  View
 } from "react-native";
+import { Button } from "react-native-paper";
 
 const APK_NAME = "painel.apk";
 const APK_URL =
@@ -18,6 +15,10 @@ const APK_URL =
 
 export default function DownloadButton() {
   const [progressPercentage, setProgressPercentage] = useState(0);
+  const formattedProgress = progressPercentage
+    .toFixed(2)
+    .toString()
+    .slice(0, 4);
   const [isDownloading, setIsDownloading] = useState(false);
 
   async function handleDownload() {
@@ -121,47 +122,23 @@ export default function DownloadButton() {
     Alert.alert(alertTitle, error.message || alertMessage);
   }
 
-  const styles = StyleSheet.create({
-    button: {
-      backgroundColor: colors.zinc,
-      padding: 10,
-      borderRadius: 8,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    buttonText: {
-      color: "#fff",
-      fontSize: 18,
-      fontWeight: "bold",
-    },
-    progress: {
-      marginTop: 32,
-      fontSize: 16,
-      fontWeight: "bold",
-      textTransform: "uppercase",
-    },
-  });
-
   return (
     <View>
-      <TouchableOpacity
-        style={styles.button}
-        activeOpacity={0.7}
+      <Button
+        mode="contained"
+        loading={isDownloading}
         onPress={handleDownload}
         disabled={isDownloading}
       >
         {isDownloading ? (
-          <ActivityIndicator color="#FFF" size="small" />
+          <>
+            {formattedProgress}% baixando...
+            <ActivityIndicator color="#000" size="small" />
+          </>
         ) : (
-          <Text style={styles.buttonText}>Download PAINEL</Text>
+          "Download PAINEL"
         )}
-      </TouchableOpacity>
-
-      {progressPercentage > 0 && (
-        <Text style={styles.progress}>
-          {progressPercentage.toFixed(1)}% baixando...
-        </Text>
-      )}
+      </Button>
     </View>
   );
 }
