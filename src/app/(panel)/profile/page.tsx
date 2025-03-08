@@ -1,13 +1,15 @@
 import colors from "@/constants/colors";
 import { useAuth } from "@/src/context/AuthContext";
 import { supabase } from "@/src/lib/supabase";
-import { Link } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { Alert, Button, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
+import { Button, Text } from "react-native-paper";
 import DownloadButton from "../../components/Download/page";
 
 export default function Profile() {
   const { setAuth, user } = useAuth();
+  const navigation = useNavigation();
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
@@ -69,17 +71,30 @@ export default function Profile() {
         <Text style={styles.logoText}>
           Dumer <Text style={{ color: colors.green }}>Sensi</Text>
         </Text>
-        <Text style={styles.slogan}>Painel</Text>
+
+        <Text style={styles.slogan}>
+          Painel
+          <Text style={[{ color: colors.green }]}>
+            {isAdmin ? "Moderador" : "Usuário"}
+          </Text>
+        </Text>
       </View>
 
       <View style={styles.buttons}>
         {isAdmin && (
-          <Link href="/(auth)/signup/page" style={styles.link}>
-            <Text>Cadastrar USUÁRIO</Text>
-          </Link>
+          <>
+            <Button
+              mode="contained"
+              onPress={() => navigation.navigate("(auth)/signup/page")}
+            >
+              Cadastrar Usuário
+            </Button>
+          </>
         )}
         <DownloadButton />
-        <Button title="Sair" onPress={handleSignout} />
+        <Button icon="logout" mode="contained-tonal" onPress={handleSignout}>
+          Sair
+        </Button>
       </View>
     </View>
   );
@@ -100,7 +115,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: "100%",
     borderRadius: 8,
-    color: colors.white
+    color: colors.white,
   },
   header: {
     paddingLeft: 14,
