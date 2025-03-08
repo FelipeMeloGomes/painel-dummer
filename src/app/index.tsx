@@ -1,11 +1,15 @@
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import colors from "../../constants/colors";
+import Toast from "react-native-toast-message";
 
 export default function Index() {
   return (
-    <View style={styles.container}>
-      <ActivityIndicator size={44} color={colors.green} />
-    </View>
+    <>
+      <Toast />
+      <View style={styles.container}>
+        <ActivityIndicator size={44} color={colors.green} />
+      </View>
+    </>
   );
 }
 

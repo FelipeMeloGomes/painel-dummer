@@ -1,9 +1,9 @@
 import colors from "@/constants/colors";
 import { Ionicons } from "@expo/vector-icons";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
-import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import {
-  Alert,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -12,31 +12,52 @@ import {
   TextInput,
   View,
 } from "react-native";
+import Toast from "react-native-toast-message";
+import * as z from "zod";
 import { supabase } from "../../../lib/supabase";
 
-export default function Signup() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+const signUpSchema = z.object({
+  name: z.string().min(3, "O nome precisa ter pelo menos 3 caracteres"),
+  email: z.string().email("Email inválido"),
+  password: z.string().min(6, "A senha precisa ter pelo menos 6 caracteres"),
+});
 
-  async function handleSignUpt() {
-    setLoading(true);
-    const { data, error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-      options: { data: { name: name, roles: false } },
+type SignUpForm = z.infer<typeof signUpSchema>;
+
+export default function Signup() {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpForm>({
+    resolver: zodResolver(signUpSchema),
+  });
+
+  async function handleSignUp({ name, email, password }: SignUpForm) {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { name, roles: false } },
     });
 
     if (error) {
-      Alert.alert("Error", error.message);
-      setLoading(false);
+      Toast.show({
+        type: "error",
+        text1: "Erro no cadastro",
+        text2: error.message,
+      });
       return;
     }
 
-    setLoading(false);
+    Toast.show({
+      type: "success",
+      text1: "Cadastro realizado",
+      text2: "Agora você pode fazer login",
+    });
+
     router.replace("/(auth)/signin/page");
   }
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={{ flex: 1, backgroundColor: colors.white }}>
@@ -50,43 +71,81 @@ export default function Signup() {
             </Text>
             <Text style={styles.slogan}>Cadastrar Usuário</Text>
           </View>
+
           <View style={styles.form}>
             <View>
               <Text style={styles.label}>Nome completo</Text>
-              <TextInput
-                style={styles.input}
-                value={name}
-                onChangeText={setName}
-                placeholder="Nome completo"
+              <Controller
+                control={control}
+                name="name"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Nome completo"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                )}
               />
+              {errors.name && (
+                <Text style={styles.errorText}>{errors.name.message}</Text>
+              )}
             </View>
+
             <View>
               <Text style={styles.label}>Email</Text>
-              <TextInput
-                style={styles.input}
-                value={email}
-                onChangeText={setEmail}
-                placeholder="Digite seu email"
+              <Controller
+                control={control}
+                name="email"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Digite seu email"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                )}
               />
+              {errors.email && (
+                <Text style={styles.errorText}>{errors.email.message}</Text>
+              )}
             </View>
+
             <View>
               <Text style={styles.label}>Senha</Text>
-              <TextInput
-                style={styles.input}
-                value={password}
-                onChangeText={setPassword}
-                placeholder="Digite sua senha"
-                secureTextEntry
+              <Controller
+                control={control}
+                name="password"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Digite sua senha"
+                    secureTextEntry
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                )}
               />
+              {errors.password && (
+                <Text style={styles.errorText}>{errors.password.message}</Text>
+              )}
             </View>
-            <Pressable style={styles.button} onPress={handleSignUpt}>
-              <Text style={styles.buttonText}>
-                {loading ? "Carregando..." : "Cadastrar"}
-              </Text>
+
+            <Pressable
+              style={styles.button}
+              onPress={handleSubmit(handleSignUp)}
+            >
+              <Text style={styles.buttonText}>Cadastrar</Text>
             </Pressable>
           </View>
         </View>
       </ScrollView>
+      <Toast />
     </SafeAreaView>
   );
 }
@@ -129,31 +188,34 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.gray,
     borderRadius: 8,
-    marginBottom: 16,
+    marginBottom: 8,
     paddingHorizontal: 8,
     paddingTop: 14,
     paddingBottom: 14,
   },
   button: {
     backgroundColor: colors.green,
-    paddingTop: 14,
-    paddingBottom: 14,
+    paddingVertical: 14,
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
     borderRadius: 8,
+    marginTop: 16,
   },
-
   buttonText: {
     color: colors.white,
     fontWeight: "bold",
   },
-
   backButton: {
     backgroundColor: "rgba(255, 255, 255, 0.55)",
     alignSelf: "flex-start",
     padding: 8,
     borderRadius: 8,
+    marginBottom: 8,
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
     marginBottom: 8,
   },
 });
