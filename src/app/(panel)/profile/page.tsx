@@ -85,6 +85,8 @@ export default function Profile() {
           <>
             <Button
               mode="contained"
+              icon="account-plus"
+              buttonColor={colors.green}
               onPress={() => navigation.navigate("(auth)/signup/page")}
             >
               Cadastrar Usuário

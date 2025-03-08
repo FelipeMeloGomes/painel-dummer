@@ -1,12 +1,8 @@
+import colors from "@/constants/colors";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import { useState } from "react";
-import {
-  ActivityIndicator,
-  Alert,
-  Platform,
-  View
-} from "react-native";
+import { ActivityIndicator, Alert, Platform, View } from "react-native";
 import { Button } from "react-native-paper";
 
 const APK_NAME = "painel.apk";
@@ -129,6 +125,8 @@ export default function DownloadButton() {
         loading={isDownloading}
         onPress={handleDownload}
         disabled={isDownloading}
+        buttonColor={colors.green}
+        icon="download"
       >
         {isDownloading ? (
           <>
