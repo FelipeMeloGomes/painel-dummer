@@ -24,6 +24,23 @@ const signUpSchema = z.object({
 
 type SignUpForm = z.infer<typeof signUpSchema>;
 
+function translateSupabaseError(message: string): string {
+  const errorMap: Record<string, string> = {
+    "Invalid login credentials":
+      "Credenciais inválidas. Verifique seu email e senha.",
+    "User not found": "Usuário não encontrado.",
+    "Email not confirmed":
+      "Seu email ainda não foi confirmado. Verifique sua caixa de entrada.",
+    "Password should be at least 6 characters":
+      "A senha deve ter pelo menos 6 caracteres.",
+    "Email already taken": "Este email já está em uso.",
+    "Weak password": "A senha é muito fraca. Use uma senha mais forte.",
+    "Invalid email format": "Formato de email inválido.",
+  };
+
+  return errorMap[message] || "Ocorreu um erro inesperado. Tente novamente.";
+}
+
 export default function Signup() {
   const {
     control,
@@ -41,11 +58,19 @@ export default function Signup() {
     });
 
     if (error) {
-      Toast.show({
-        type: "error",
-        text1: "Erro no cadastro",
-        text2: error.message,
-      });
+      if (error.message.includes("email already")) {
+        Toast.show({
+          type: "error",
+          text1: "Erro no cadastro",
+          text2: "Este email já está em uso. Tente outro email.",
+        });
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Erro no cadastro",
+          text2: translateSupabaseError(error.message),
+        });
+      }
       return;
     }
 

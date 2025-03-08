@@ -3,13 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View
-} from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import Toast from "react-native-toast-message";
 import * as z from "zod";
 import { supabase } from "../../../lib/supabase";
@@ -20,6 +14,20 @@ const loginSchema = z.object({
 });
 
 type LoginForm = z.infer<typeof loginSchema>;
+
+function translateSupabaseError(message: string): string {
+  const errorMap: Record<string, string> = {
+    "Invalid login credentials":
+      "Credenciais inválidas. Verifique seu email e senha.",
+    "User not found": "Usuário não encontrado.",
+    "Email not confirmed":
+      "Seu email ainda não foi confirmado. Verifique sua caixa de entrada.",
+    "Password should be at least 6 characters":
+      "A senha deve ter pelo menos 6 caracteres.",
+  };
+
+  return errorMap[message] || "Ocorreu um erro inesperado. Tente novamente.";
+}
 
 export default function Login() {
   const {
@@ -46,7 +54,7 @@ export default function Login() {
       Toast.show({
         type: "error",
         text1: "Erro no login",
-        text2: error.message,
+        text2: translateSupabaseError(error.message)
       });
       return;
     }
