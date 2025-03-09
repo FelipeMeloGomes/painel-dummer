@@ -1,6 +1,6 @@
 import colors from "@/constants/colors";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
@@ -54,7 +54,7 @@ export default function Login() {
       Toast.show({
         type: "error",
         text1: "Erro no login",
-        text2: translateSupabaseError(error.message)
+        text2: translateSupabaseError(error.message),
       });
       return;
     }
@@ -124,6 +124,9 @@ export default function Login() {
             {loading ? "Carregando..." : "Acessar"}
           </Text>
         </Pressable>
+        <Link href="/(auth)/signup/page" style={styles.link}>
+          <Text>Ainda não possui uma conta? Cadastre-se</Text>
+        </Link>
       </View>
 
       <Toast />
@@ -164,6 +167,10 @@ const styles = StyleSheet.create({
   label: {
     color: colors.zinc,
     marginBottom: 4,
+  },
+  link: {
+    textAlign: "center",
+    marginTop: 10,
   },
   input: {
     borderWidth: 1,

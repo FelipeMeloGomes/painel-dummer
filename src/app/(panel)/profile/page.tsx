@@ -11,14 +11,27 @@ export default function Profile() {
   const { setAuth, user } = useAuth();
   const navigation = useNavigation();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isPremium, setIsPremium] = useState(false);
+  const [isFree, setIsFree] = useState(false);
+
+  type RoleName = "adm" | "premium" | "free";
+
+  const roles: Record<
+    RoleName,
+    { isAdmin: boolean; isPremium: boolean; isFree: boolean }
+  > = {
+    adm: { isAdmin: true, isPremium: false, isFree: false },
+    premium: { isAdmin: false, isPremium: true, isFree: false },
+    free: { isAdmin: false, isPremium: false, isFree: true },
+  };
 
   useEffect(() => {
     const checkUserInDatabase = async () => {
       if (user && user.id) {
         try {
-          const { data, error, status } = await supabase
+          const { data, error } = await supabase
             .from("users")
-            .select("roles")
+            .select("role_id")
             .eq("id", user.id)
             .limit(1);
 
@@ -31,15 +44,42 @@ export default function Profile() {
           }
 
           if (data && Array.isArray(data) && data.length > 0) {
-            const role = data[0]?.roles;
+            const roleId = data[0]?.role_id;
 
-            if (typeof role === "boolean") {
-              setIsAdmin(role);
+            const { data: roleData, error: roleError } = await supabase
+              .from("roles")
+              .select("name")
+              .eq("id", roleId)
+              .single();
+
+            if (roleError) {
+              Alert.alert(
+                "Erro",
+                "Ocorreu um erro ao buscar o papel do usuário.",
+              );
+              return;
+            }
+
+            if (roleData) {
+              const role = roleData.name.trim().toLowerCase();
+              const userRole = roles[role as RoleName] || {
+                isAdmin: false,
+                isPremium: false,
+                isFree: false,
+              };
+
+              setIsAdmin(userRole.isAdmin);
+              setIsPremium(userRole.isPremium);
+              setIsFree(userRole.isFree);
             } else {
               setIsAdmin(false);
+              setIsPremium(false);
+              setIsFree(false);
             }
           } else {
             setIsAdmin(false);
+            setIsPremium(false);
+            setIsFree(false);
           }
         } catch (error) {
           Alert.alert(
@@ -49,6 +89,9 @@ export default function Profile() {
         }
       } else {
         Alert.alert("Erro", "Você não está logado.");
+        setIsAdmin(false);
+        setIsPremium(false);
+        setIsFree(false);
       }
     };
 
@@ -75,24 +118,12 @@ export default function Profile() {
         <Text style={styles.slogan}>
           Painel
           <Text style={[{ color: colors.green }]}>
-            {isAdmin ? "Moderador" : "Usuário"}
+            {isAdmin ? "Moderador" : isPremium ? "Premium" : "Free"}
           </Text>
         </Text>
       </View>
 
       <View style={styles.buttons}>
-        {isAdmin && (
-          <>
-            <Button
-              mode="contained"
-              icon="account-plus"
-              buttonColor={colors.green}
-              onPress={() => navigation.navigate("(auth)/signup/page")}
-            >
-              Cadastrar Usuário
-            </Button>
-          </>
-        )}
         <DownloadButton />
         <Button icon="logout" mode="contained-tonal" onPress={handleSignout}>
           Sair
