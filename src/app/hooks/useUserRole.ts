@@ -101,3 +101,5 @@ export const useUserRole = () => {
 
   return { isAdmin, isPremium, isFree, roleId };
 };
+
+export default useUserRole;
