@@ -2,7 +2,7 @@ import colors from "@/constants/colors";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import { useState } from "react";
-import { ActivityIndicator, Alert, Platform, View } from "react-native";
+import { ActivityIndicator, Alert, Platform, StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
 
 const APK_NAME = "painel.apk";
@@ -119,24 +119,29 @@ export default function DownloadButton() {
   }
 
   return (
-    <View>
-      <Button
-        mode="contained"
-        loading={isDownloading}
-        onPress={handleDownload}
-        disabled={isDownloading}
-        buttonColor={colors.green}
-        icon="download"
-      >
-        {isDownloading ? (
-          <>
-            {formattedProgress}% baixando...
-            <ActivityIndicator color="#000" size="small" />
-          </>
-        ) : (
-          "Download PAINEL"
-        )}
-      </Button>
-    </View>
+    <Button
+      mode="contained"
+      loading={isDownloading}
+      onPress={handleDownload}
+      disabled={isDownloading}
+      buttonColor={colors.green}
+      icon="download"
+      style={styles.button}
+    >
+      {isDownloading ? (
+        <>
+          {formattedProgress}% baixando...
+          <ActivityIndicator color="#000" size="small" />
+        </>
+      ) : (
+        "Download PAINEL"
+      )}
+    </Button>
   );
 }
+
+const styles = StyleSheet.create({
+  button: {
+    marginBottom: 20,
+  },
+});

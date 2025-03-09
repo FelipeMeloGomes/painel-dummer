@@ -5,7 +5,7 @@ import colors from "@/constants/colors";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-end",
     alignItems: "center",
     paddingTop: 34,
     backgroundColor: colors.zinc,
@@ -33,9 +33,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     gap: 10,
-    paddingTop: 24,
-    paddingLeft: 14,
-    paddingRight: 14,
+    padding: 20,
   },
   adminOptions: {
     marginTop: 20,
@@ -53,9 +51,12 @@ const styles = StyleSheet.create({
   switchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    marginVertical: 10,
-    marginTop: 30,
+    justifyContent: "flex-start",
+  },
+  containerBtn: {
+    flexDirection: "column",
+    padding: 20,
+    marginTop: 20,
   },
 });
 

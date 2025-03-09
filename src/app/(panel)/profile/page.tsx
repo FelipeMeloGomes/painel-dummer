@@ -3,7 +3,7 @@ import { useAuth } from "@/src/context/AuthContext";
 import { supabase } from "@/src/lib/supabase";
 import { useState } from "react";
 import { Alert, View } from "react-native";
-import { Button, Divider, Switch, Text, TextInput } from "react-native-paper";
+import { Button, Card, Divider, Text, TextInput } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import DownloadButton from "../../components/Download/page";
 import { useUserRole } from "../../hooks/useUserRole";
@@ -100,7 +100,7 @@ export default function Profile() {
         </Text>
       </View>
 
-      <View style={styles.buttons}>
+      <Card style={styles.buttons}>
         {isAdmin && (
           <>
             <Text variant="displaySmall">Setar Planos</Text>
@@ -118,27 +118,42 @@ export default function Profile() {
                 </Text>
               )}
               <Divider />
-              <View style={styles.switchContainer}>
-                <Text variant="bodyLarge">Free</Text>
-                <Switch
-                  value={newRole === "premium"}
-                  onValueChange={(value) => {
-                    const role = value ? "premium" : "free";
-                    setNewRole(role);
-                    changeUserRole();
-                  }}
-                />
-                <Text variant="bodyLarge">Premium</Text>
-              </View>
+
+              <Card style={styles.switchContainer}>
+                <Card.Actions>
+                  <Button
+                    mode={newRole === "free" ? "contained" : "outlined"}
+                    onPress={() => {
+                      setNewRole("free");
+                      changeUserRole();
+                    }}
+                    style={styles.roleButton}
+                  >
+                    Free
+                  </Button>
+
+                  <Button
+                    mode={newRole === "premium" ? "contained" : "outlined"}
+                    onPress={() => {
+                      setNewRole("premium");
+                      changeUserRole();
+                    }}
+                    style={styles.roleButton}
+                  >
+                    Premium
+                  </Button>
+                </Card.Actions>
+              </Card>
             </View>
           </>
         )}
-
-        <DownloadButton />
-        <Button icon="logout" mode="contained-tonal" onPress={handleSignout}>
-          Sair
-        </Button>
-      </View>
+        <Card style={styles.containerBtn}>
+          <DownloadButton />
+          <Button icon="logout" mode="contained-tonal" onPress={handleSignout}>
+            Sair
+          </Button>
+        </Card>
+      </Card>
     </View>
   );
 }
