@@ -1,7 +1,7 @@
 import colors from "@/constants/colors";
 import { useAuth } from "@/src/context/AuthContext";
 import { supabase } from "@/src/lib/supabase";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert, View } from "react-native";
 import { Button, Card, Divider, Text, TextInput } from "react-native-paper";
 import Toast from "react-native-toast-message";
@@ -13,7 +13,20 @@ export default function Profile() {
   const { setAuth, user } = useAuth();
   const [userEmail, setUserEmail] = useState("");
   const [newRole, setNewRole] = useState<"premium" | "free" | null>(null);
+  const [triggerChange, setTriggerChange] = useState(false);
   const { isAdmin, isPremium, isFree, roleId } = useUserRole();
+
+  useEffect(() => {
+    if (triggerChange && newRole) {
+      changeUserRole();
+      setTriggerChange(false);
+    }
+  }, [newRole, triggerChange]);
+
+  const handleRoleChange = (role: "premium" | "free") => {
+    setNewRole(role);
+    setTriggerChange(true);
+  };
 
   const changeUserRole = async () => {
     if (!userEmail || !newRole) {
@@ -123,10 +136,7 @@ export default function Profile() {
                 <Card.Actions>
                   <Button
                     mode={newRole === "free" ? "contained" : "outlined"}
-                    onPress={() => {
-                      setNewRole("free");
-                      changeUserRole();
-                    }}
+                    onPress={() => handleRoleChange("free")}
                     style={styles.roleButton}
                   >
                     Free
@@ -134,10 +144,7 @@ export default function Profile() {
 
                   <Button
                     mode={newRole === "premium" ? "contained" : "outlined"}
-                    onPress={() => {
-                      setNewRole("premium");
-                      changeUserRole();
-                    }}
+                    onPress={() => handleRoleChange("premium")}
                     style={styles.roleButton}
                   >
                     Premium
