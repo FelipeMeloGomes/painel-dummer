@@ -4,6 +4,7 @@ import * as Sharing from "expo-sharing";
 import { useState } from "react";
 import { ActivityIndicator, Alert, Platform, StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
+import Toast from "react-native-toast-message";
 
 const APK_NAME = "painel.apk";
 const APK_URL =
@@ -11,32 +12,21 @@ const APK_URL =
 
 export default function DownloadButton() {
   const [progressPercentage, setProgressPercentage] = useState(0);
-  const formattedProgress = progressPercentage
-    .toFixed(2)
-    .toString()
-    .slice(0, 4);
   const [isDownloading, setIsDownloading] = useState(false);
 
   async function handleDownload() {
     try {
       setIsDownloading(true);
       const fileUri = getDownloadPath();
-      logMessage("Iniciando download para:", fileUri);
 
       const downloadResponse = await startDownload(fileUri);
       if (!downloadResponse?.uri)
-        throw new Error("Download falhou: URI de resposta vazia.");
+        throw new Error("Download failed: Empty URI.");
 
-      logMessage("Download concluído:", downloadResponse.uri);
       resetDownloadState();
       await installAPK(downloadResponse.uri);
     } catch (error) {
-      handleError(
-        "Erro no download",
-        error,
-        "Erro ao baixar",
-        "Não foi possível baixar o APK.",
-      );
+      handleError("Download Error", "Failed to download APK.");
     }
   }
 
@@ -44,39 +34,32 @@ export default function DownloadButton() {
     totalBytesWritten,
     totalBytesExpectedToWrite,
   }: FileSystem.DownloadProgressData) {
-    const percentage = calculateProgress(
-      totalBytesWritten,
-      totalBytesExpectedToWrite,
-    );
-    logMessage(`Progresso do download: ${percentage.toFixed(2)}%`);
+    const percentage = (totalBytesWritten / totalBytesExpectedToWrite) * 100;
     setProgressPercentage(percentage);
   }
 
   async function installAPK(uri: string) {
-    if (Platform.OS !== "android")
-      return Alert.alert(
-        "Aviso",
-        "A instalação automática só funciona no Android.",
+    if (Platform.OS !== "android") {
+      Alert.alert(
+        "Warning",
+        "Automatic installation is only available on Android.",
       );
+      return;
+    }
 
     try {
-      logMessage("Iniciando instalação do APK:", uri);
-      if (!(await fileExists(uri))) throw new Error("APK não encontrado.");
+      const fileInfo = await FileSystem.getInfoAsync(uri);
+      if (!fileInfo.exists) throw new Error("APK file not found.");
 
       await Sharing.shareAsync(uri, {
         mimeType: "application/vnd.android.package-archive",
       });
     } catch (error) {
-      handleError(
-        "Erro ao iniciar instalação",
-        error,
-        "Erro",
-        "Não foi possível iniciar a instalação do APK.",
-      );
+      handleError("Installation Error", "Failed to start APK installation.");
     }
   }
 
-  function getDownloadPath(): string {
+  function getDownloadPath() {
     return FileSystem.documentDirectory + APK_NAME;
   }
 
@@ -90,32 +73,18 @@ export default function DownloadButton() {
     return await downloadResumable.downloadAsync();
   }
 
-  function calculateProgress(written: number, expected: number): number {
-    return (written / expected) * 100;
-  }
-
-  async function fileExists(uri: string): Promise<boolean> {
-    const fileInfo = await FileSystem.getInfoAsync(uri);
-    return fileInfo.exists;
-  }
-
   function resetDownloadState() {
     setProgressPercentage(0);
     setIsDownloading(false);
   }
 
-  function logMessage(...messages: any[]) {
-    console.log(...messages);
-  }
-
-  function handleError(
-    logPrefix: string,
-    error: any,
-    alertTitle: string,
-    alertMessage: string,
-  ) {
-    console.error(logPrefix, error);
-    Alert.alert(alertTitle, error.message || alertMessage);
+  function handleError(title: string, message: string) {
+    Toast.show({
+      type: "error",
+      position: "bottom",
+      text1: title,
+      text2: message,
+    });
   }
 
   return (
@@ -130,7 +99,7 @@ export default function DownloadButton() {
     >
       {isDownloading ? (
         <>
-          {formattedProgress}% baixando...
+          {progressPercentage.toFixed(2)}% downloading...
           <ActivityIndicator color="#000" size="small" />
         </>
       ) : (
