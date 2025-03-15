@@ -1,19 +1,14 @@
-// styles.ts
-import { StyleSheet } from "react-native";
 import colors from "@/constants/colors";
+import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-end",
     alignItems: "center",
     paddingTop: 34,
     backgroundColor: colors.zinc,
   },
-  header: {
-    paddingLeft: 14,
-    paddingRight: 14,
-  },
+
   logoText: {
     fontSize: 20,
     fontWeight: "bold",
@@ -35,10 +30,7 @@ const styles = StyleSheet.create({
     gap: 10,
     padding: 20,
   },
-  adminOptions: {
-    marginTop: 20,
-    width: "100%",
-  },
+
   input: {
     marginBottom: 10,
   },
@@ -56,6 +48,9 @@ const styles = StyleSheet.create({
   containerBtn: {
     flexDirection: "column",
     padding: 20,
+    marginTop: 20,
+  },
+  countContainer: {
     marginTop: 20,
   },
 });

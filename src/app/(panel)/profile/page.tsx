@@ -2,10 +2,11 @@ import colors from "@/constants/colors";
 import { useAuth } from "@/src/context/AuthContext";
 import { supabase } from "@/src/lib/supabase";
 import { useEffect, useState } from "react";
-import { Alert, View } from "react-native";
-import { Button, Card, Divider, Text, TextInput } from "react-native-paper";
+import { Alert, SafeAreaView, ScrollView, View } from "react-native";
+import { Button, Card, Text, TextInput } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import DownloadButton from "../../components/Download/page";
+import UserCount from "../../components/UserCount/page";
 import { useUserRole } from "../../hooks/useUserRole";
 import styles from "./styles";
 
@@ -13,8 +14,34 @@ export default function Profile() {
   const { setAuth, user } = useAuth();
   const [userEmail, setUserEmail] = useState("");
   const [newRole, setNewRole] = useState<"premium" | "free" | null>(null);
+  const [userName, setUserName] = useState<string>("");
   const [triggerChange, setTriggerChange] = useState(false);
   const { isAdmin, isPremium, isFree, roleId } = useUserRole();
+
+  useEffect(() => {
+    if (user?.id) {
+      fetchUserName(user.id);
+    }
+  }, [user]);
+
+  const fetchUserName = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("users")
+        .select("name")
+        .eq("id", userId)
+        .single();
+
+      if (error || !data) {
+        Alert.alert("Erro", "Não foi possível buscar o nome do usuário.");
+        return;
+      }
+
+      setUserName(data.name);
+    } catch (error) {
+      Alert.alert("Erro", "Houve um problema ao buscar o nome.");
+    }
+  };
 
   useEffect(() => {
     if (triggerChange && newRole) {
@@ -99,76 +126,94 @@ export default function Profile() {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.logoText}>
-          Dumer <Text style={{ color: colors.green }}>Sensi</Text>
-        </Text>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={styles.container}>
+          <View>
+            <Text style={styles.logoText}>
+              Dumer <Text style={{ color: colors.green }}>Sensi</Text>
+            </Text>
+            <Text style={styles.slogan}>
+              Painel
+              <Text style={[{ color: colors.green }]}>
+                {isAdmin ? "Moderador" : isPremium ? "Premium" : "Free"}
+              </Text>
+            </Text>
+            <Text style={[{ color: colors.white }]}>
+              Usuário
+              <Text style={[{ color: colors.green }]}>
+                {userName || "Nome não disponível"}
+              </Text>
+            </Text>
+          </View>
 
-        <Text style={styles.slogan}>
-          Painel
-          <Text style={[{ color: colors.green }]}>
-            {isAdmin ? "Moderador" : isPremium ? "Premium" : "Free"}
-          </Text>
-        </Text>
-      </View>
+          <Card style={styles.buttons}>
+            {isAdmin && (
+              <>
+                <Card>
+                  <Card.Title title="Setar Planos" subtitle="Alterar planos" />
+                  <Card.Content>
+                    <View>
+                      <TextInput
+                        label="Email do Usuário"
+                        value={userEmail}
+                        onChangeText={setUserEmail}
+                        placeholder="Email do Usuário"
+                        style={styles.input}
+                      />
 
-      <Card style={styles.buttons}>
-        {isAdmin && (
-          <>
-            <Text variant="displaySmall">Setar Planos</Text>
-            <View style={styles.adminOptions}>
-              <TextInput
-                label="Email do Usuário"
-                value={userEmail}
-                onChangeText={setUserEmail}
-                placeholder="Email do Usuário"
-                style={styles.input}
-              />
-              {roleId && (
-                <Text variant="bodyLarge">
-                  Status do Usuário: Role ID - {roleId}
-                </Text>
+                      <Card style={styles.switchContainer}>
+                        <Card.Actions>
+                          <Button
+                            mode={newRole === "free" ? "contained" : "outlined"}
+                            onPress={() => handleRoleChange("free")}
+                            style={styles.roleButton}
+                          >
+                            Free
+                          </Button>
+
+                          <Button
+                            mode={
+                              newRole === "premium" ? "contained" : "outlined"
+                            }
+                            onPress={() => handleRoleChange("premium")}
+                            style={styles.roleButton}
+                          >
+                            Premium
+                          </Button>
+                        </Card.Actions>
+                      </Card>
+                    </View>
+                  </Card.Content>
+                </Card>
+                <Card style={styles.countContainer}>
+                  <Card.Title title="Contagem de Usuários" />
+                  <Card.Content>
+                    <UserCount />
+                  </Card.Content>
+                </Card>
+              </>
+            )}
+            <Card style={styles.containerBtn}>
+              {isAdmin ? (
+                <>
+                  <DownloadButton userRole="premium" />
+                  <DownloadButton userRole="free" />
+                </>
+              ) : (
+                <DownloadButton userRole={isPremium ? "premium" : "free"} />
               )}
-              <Divider />
-
-              <Card style={styles.switchContainer}>
-                <Card.Actions>
-                  <Button
-                    mode={newRole === "free" ? "contained" : "outlined"}
-                    onPress={() => handleRoleChange("free")}
-                    style={styles.roleButton}
-                  >
-                    Free
-                  </Button>
-
-                  <Button
-                    mode={newRole === "premium" ? "contained" : "outlined"}
-                    onPress={() => handleRoleChange("premium")}
-                    style={styles.roleButton}
-                  >
-                    Premium
-                  </Button>
-                </Card.Actions>
-              </Card>
-            </View>
-          </>
-        )}
-        <Card style={styles.containerBtn}>
-          {isAdmin ? (
-            <>
-              <DownloadButton userRole="premium" />
-              <DownloadButton userRole="free" />
-            </>
-          ) : (
-            <DownloadButton userRole={isPremium ? "premium" : "free"} />
-          )}
-
-          <Button icon="logout" mode="contained-tonal" onPress={handleSignout}>
-            Sair
-          </Button>
-        </Card>
-      </Card>
-    </View>
+              <Button
+                icon="logout"
+                mode="contained-tonal"
+                onPress={handleSignout}
+              >
+                Sair
+              </Button>
+            </Card>
+          </Card>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
