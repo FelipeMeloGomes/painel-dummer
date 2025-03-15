@@ -155,7 +155,14 @@ export default function Profile() {
           </>
         )}
         <Card style={styles.containerBtn}>
-          <DownloadButton userRole={isPremium ? "premium" : "free"} />
+          {isAdmin ? (
+            <>
+              <DownloadButton userRole="premium" />
+              <DownloadButton userRole="free" />
+            </>
+          ) : (
+            <DownloadButton userRole={isPremium ? "premium" : "free"} />
+          )}
 
           <Button icon="logout" mode="contained-tonal" onPress={handleSignout}>
             Sair

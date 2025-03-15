@@ -1,3 +1,4 @@
+import APK_URLS from "@/constants/apkLinks";
 import colors from "@/constants/colors";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
@@ -16,11 +17,6 @@ interface DownloadButtonProps {
 export default function DownloadButton({ userRole }: DownloadButtonProps) {
   const [progressPercentage, setProgressPercentage] = useState(0);
   const [isDownloading, setIsDownloading] = useState(false);
-
-  const APK_URL =
-    userRole === "premium"
-      ? "https://uhteeunwizzmxlmjaidz.supabase.co/storage/v1/object/sign/apk/apk_premium.apk?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhcGsvYXBrX3ByZW1pdW0uYXBrIiwiaWF0IjoxNzQyMDEyMzU5LCJleHAiOjE3NzM1NDgzNTl9.LCzhMaM2I41Td27G_BWFXWbC1xLcT7eNL0Tz0mF8lwY"
-      : "https://uhteeunwizzmxlmjaidz.supabase.co/storage/v1/object/sign/apk/apk_free.apk?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhcGsvYXBrX2ZyZWUuYXBrIiwiaWF0IjoxNzQyMDEyMzc1LCJleHAiOjE3NzM1NDgzNzV9.VsufwccmFORwjrJQQE7NgZ1tAagyFm82V4sRrMWab0k";
 
   async function handleDownload() {
     try {
@@ -73,7 +69,7 @@ export default function DownloadButton({ userRole }: DownloadButtonProps) {
 
   async function startDownload(fileUri: string) {
     const downloadResumable = FileSystem.createDownloadResumable(
-      APK_URL,
+      APK_URLS[userRole || "free"],
       fileUri,
       {},
       onDownloadProgress,
