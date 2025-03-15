@@ -7,12 +7,20 @@ import { Button } from "react-native-paper";
 import Toast from "react-native-toast-message";
 
 const APK_NAME = "painel.apk";
-const APK_URL =
-  "https://uhteeunwizzmxlmjaidz.supabase.co/storage/v1/object/sign/apk/painel.apk?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhcGsvcGFpbmVsLmFwayIsImlhdCI6MTc0MTM5OTAyMSwiZXhwIjoxNzcyOTM1MDIxfQ.KgzGxMiqtzDYE6W6oP6V_h9EBr5wI9LoDuUgy-E9oQg";
+type UserRole = "premium" | "free" | null;
 
-export default function DownloadButton() {
+interface DownloadButtonProps {
+  userRole: UserRole;
+}
+
+export default function DownloadButton({ userRole }: DownloadButtonProps) {
   const [progressPercentage, setProgressPercentage] = useState(0);
   const [isDownloading, setIsDownloading] = useState(false);
+
+  const APK_URL =
+    userRole === "premium"
+      ? "https://uhteeunwizzmxlmjaidz.supabase.co/storage/v1/object/sign/apk/apk_premium.apk?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhcGsvYXBrX3ByZW1pdW0uYXBrIiwiaWF0IjoxNzQyMDEyMzU5LCJleHAiOjE3NzM1NDgzNTl9.LCzhMaM2I41Td27G_BWFXWbC1xLcT7eNL0Tz0mF8lwY"
+      : "https://uhteeunwizzmxlmjaidz.supabase.co/storage/v1/object/sign/apk/apk_free.apk?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhcGsvYXBrX2ZyZWUuYXBrIiwiaWF0IjoxNzQyMDEyMzc1LCJleHAiOjE3NzM1NDgzNzV9.VsufwccmFORwjrJQQE7NgZ1tAagyFm82V4sRrMWab0k";
 
   async function handleDownload() {
     try {
@@ -103,7 +111,7 @@ export default function DownloadButton() {
           <ActivityIndicator color="#000" size="small" />
         </>
       ) : (
-        "Download PAINEL"
+        `Download ${userRole === "premium" ? "Premium" : "Free"} APK`
       )}
     </Button>
   );

@@ -155,7 +155,8 @@ export default function Profile() {
           </>
         )}
         <Card style={styles.containerBtn}>
-          <DownloadButton />
+          <DownloadButton userRole={isPremium ? "premium" : "free"} />
+
           <Button icon="logout" mode="contained-tonal" onPress={handleSignout}>
             Sair
           </Button>
