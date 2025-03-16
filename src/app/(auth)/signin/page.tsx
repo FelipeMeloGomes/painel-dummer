@@ -3,7 +3,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, router } from "expo-router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Text, TextInput } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import * as z from "zod";
 import { supabase } from "../../../lib/supabase";
@@ -39,6 +40,7 @@ export default function Login() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   async function handleSignIn({ email, password }: LoginForm) {
     setLoading(true);
@@ -79,13 +81,16 @@ export default function Login() {
             name="email"
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
-                style={styles.input}
+                mode="outlined"
+                outlineColor="black"
+                activeOutlineColor="black"
                 placeholder="Digite seu email"
                 keyboardType="email-address"
                 autoCapitalize="none"
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
+                left={<TextInput.Icon icon="email" />}
               />
             )}
           />
@@ -101,12 +106,21 @@ export default function Login() {
             name="password"
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
-                style={styles.input}
+                mode="outlined"
+                outlineColor="black"
+                activeOutlineColor="black"
                 placeholder="Digite sua senha"
-                secureTextEntry
+                secureTextEntry={passwordVisible}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
+                left={<TextInput.Icon icon="lock" />}
+                right={
+                  <TextInput.Icon
+                    icon={passwordVisible ? "eye-off" : "eye"}
+                    onPress={() => setPasswordVisible(!passwordVisible)}
+                  />
+                }
               />
             )}
           />
@@ -121,14 +135,13 @@ export default function Login() {
           disabled={loading}
         >
           <Text style={styles.buttonText}>
-            {loading ? "Carregando..." : "Acessar"}
+            {loading ? <ActivityIndicator animating={true} /> : "Acessar"}
           </Text>
         </Pressable>
         <Link href="/(auth)/signup/page" style={styles.link}>
           <Text>Ainda não possui uma conta? Cadastre-se</Text>
         </Link>
       </View>
-
       <Toast />
     </View>
   );
@@ -171,15 +184,6 @@ const styles = StyleSheet.create({
   link: {
     textAlign: "center",
     marginTop: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: colors.gray,
-    borderRadius: 8,
-    marginBottom: 8,
-    paddingHorizontal: 8,
-    paddingTop: 14,
-    paddingBottom: 14,
   },
   button: {
     backgroundColor: colors.green,

@@ -20,6 +20,11 @@ const styles = StyleSheet.create({
     color: colors.white,
     marginBottom: 34,
   },
+
+  informations: {
+    marginBottom: 20,
+  },
+
   buttons: {
     flex: 1,
     width: "100%",

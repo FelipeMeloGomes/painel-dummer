@@ -3,18 +3,18 @@ import { Ionicons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
+import { ActivityIndicator, Text, TextInput } from "react-native-paper";
 import {
   Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  Text,
-  TextInput,
   View,
 } from "react-native";
 import Toast from "react-native-toast-message";
 import * as z from "zod";
 import { supabase } from "../../../lib/supabase";
+import { useState } from "react";
 
 const signUpSchema = z.object({
   name: z.string().min(3, "O nome precisa ter pelo menos 3 caracteres"),
@@ -49,6 +49,9 @@ export default function Signup() {
   } = useForm<SignUpForm>({
     resolver: zodResolver(signUpSchema),
   });
+
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   async function handleSignUp({ name, email, password }: SignUpForm) {
     try {
@@ -135,11 +138,14 @@ export default function Signup() {
                 name="name"
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
-                    style={styles.input}
+                    mode="outlined"
+                    outlineColor="black"
+                    activeOutlineColor="black"
                     placeholder="Nome completo"
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}
+                    left={<TextInput.Icon icon="account" />}
                   />
                 )}
               />
@@ -155,13 +161,16 @@ export default function Signup() {
                 name="email"
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
-                    style={styles.input}
+                    mode="outlined"
+                    outlineColor="black"
+                    activeOutlineColor="black"
                     placeholder="Digite seu email"
                     keyboardType="email-address"
                     autoCapitalize="none"
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}
+                    left={<TextInput.Icon icon="email" />}
                   />
                 )}
               />
@@ -177,12 +186,21 @@ export default function Signup() {
                 name="password"
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
-                    style={styles.input}
+                    mode="outlined"
+                    outlineColor="black"
+                    activeOutlineColor="black"
                     placeholder="Digite sua senha"
-                    secureTextEntry
+                    secureTextEntry={passwordVisible}
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}
+                    left={<TextInput.Icon icon="lock" />}
+                    right={
+                      <TextInput.Icon
+                        icon={passwordVisible ? "eye-off" : "eye"}
+                        onPress={() => setPasswordVisible(!passwordVisible)}
+                      />
+                    }
                   />
                 )}
               />
@@ -194,8 +212,11 @@ export default function Signup() {
             <Pressable
               style={styles.button}
               onPress={handleSubmit(handleSignUp)}
+              disabled={loading}
             >
-              <Text style={styles.buttonText}>Cadastrar</Text>
+              <Text style={styles.buttonText}>
+                {loading ? <ActivityIndicator animating={true} /> : "Cadastrar"}
+              </Text>
             </Pressable>
           </View>
         </View>
@@ -239,15 +260,7 @@ const styles = StyleSheet.create({
     color: colors.zinc,
     marginBottom: 4,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: colors.gray,
-    borderRadius: 8,
-    marginBottom: 8,
-    paddingHorizontal: 8,
-    paddingTop: 14,
-    paddingBottom: 14,
-  },
+
   button: {
     backgroundColor: colors.green,
     paddingVertical: 14,

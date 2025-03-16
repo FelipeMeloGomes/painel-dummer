@@ -3,7 +3,7 @@ import { useAuth } from "@/src/context/AuthContext";
 import { supabase } from "@/src/lib/supabase";
 import { useEffect, useState } from "react";
 import { Alert, SafeAreaView, ScrollView, View } from "react-native";
-import { Button, Card, Text, TextInput } from "react-native-paper";
+import { Button, Card, Chip, Text, TextInput } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import DownloadButton from "../../components/Download/page";
 import UserCount from "../../components/UserCount/page";
@@ -129,22 +129,15 @@ export default function Profile() {
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.container}>
-          <View>
+          <View style={styles.informations}>
             <Text style={styles.logoText}>
               Dumer <Text style={{ color: colors.green }}>Sensi</Text>
             </Text>
-            <Text style={styles.slogan}>
-              Painel
-              <Text style={[{ color: colors.green }]}>
+            <View>
+              <Chip mode="outlined" selected={isAdmin || isPremium}>
                 {isAdmin ? "Moderador" : isPremium ? "Premium" : "Free"}
-              </Text>
-            </Text>
-            <Text style={[{ color: colors.white }]}>
-              Usuário
-              <Text style={[{ color: colors.green }]}>
-                {userName || "Nome não disponível"}
-              </Text>
-            </Text>
+              </Chip>
+            </View>
           </View>
 
           <Card style={styles.buttons}>
@@ -155,6 +148,9 @@ export default function Profile() {
                   <Card.Content>
                     <View>
                       <TextInput
+                        mode="outlined"
+                        outlineColor="black"
+                        activeOutlineColor="black"
                         label="Email do Usuário"
                         value={userEmail}
                         onChangeText={setUserEmail}
@@ -168,6 +164,7 @@ export default function Profile() {
                             mode={newRole === "free" ? "contained" : "outlined"}
                             onPress={() => handleRoleChange("free")}
                             style={styles.roleButton}
+                            icon="gift"
                           >
                             Free
                           </Button>
@@ -178,6 +175,7 @@ export default function Profile() {
                             }
                             onPress={() => handleRoleChange("premium")}
                             style={styles.roleButton}
+                            icon="crown"
                           >
                             Premium
                           </Button>
