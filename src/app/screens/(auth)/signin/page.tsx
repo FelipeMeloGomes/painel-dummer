@@ -7,7 +7,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { ActivityIndicator, Text, TextInput } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import * as z from "zod";
-import { supabase } from "../../../lib/supabase";
+import { supabase } from "../../../../lib/supabase";
 
 const loginSchema = z.object({
   email: z.string().min(5, "O email é obrigatório").email("Email inválido"),
@@ -61,7 +61,7 @@ export default function Login() {
       return;
     }
 
-    router.replace("/(panel)/profile/page");
+    router.replace("/screens/(panel)/profile/page");
   }
 
   return (
@@ -138,7 +138,7 @@ export default function Login() {
             {loading ? <ActivityIndicator animating={true} /> : "Acessar"}
           </Text>
         </Pressable>
-        <Link href="/(auth)/signup/page" style={styles.link}>
+        <Link href="/screens/(auth)/signup/page" style={styles.link}>
           <Text>Ainda não possui uma conta? Cadastre-se</Text>
         </Link>
       </View>

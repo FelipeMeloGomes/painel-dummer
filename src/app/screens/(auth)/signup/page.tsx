@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import Toast from "react-native-toast-message";
 import * as z from "zod";
-import { supabase } from "../../../lib/supabase";
+import { supabase } from "../../../../lib/supabase";
 import { useState } from "react";
 
 const signUpSchema = z.object({
@@ -105,7 +105,7 @@ export default function Signup() {
         text2: "Agora você pode fazer login",
       });
 
-      router.replace("/(auth)/signin/page");
+      router.replace("/screens/(auth)/signin/page");
     } catch (err) {
       Toast.show({
         type: "error",

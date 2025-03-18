@@ -17,27 +17,27 @@ function MainLayout() {
     supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
         setAuth(session.user);
-        router.replace("/(panel)/profile/page");
+        router.replace("/screens/(panel)/profile/page");
         return;
       }
       setAuth(null);
-      router.replace("/(auth)/signin/page");
+      router.replace("/screens/(auth)/signin/page");
     });
   }, []);
   return (
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen
-        name="(auth)/signup/page"
+        name="screens/(auth)/signup/page"
         options={{ headerShown: false }}
       />
 
       <Stack.Screen
-        name="(auth)/signin/page"
+        name="screens/(auth)/signin/page"
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="(panel)/profile/page"
+        name="screens/(panel)/profile/page"
         options={{ headerShown: false }}
       />
     </Stack>

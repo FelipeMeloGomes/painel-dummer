@@ -5,43 +5,17 @@ import { useEffect, useState } from "react";
 import { Alert, SafeAreaView, ScrollView, View } from "react-native";
 import { Button, Card, Chip, Text, TextInput } from "react-native-paper";
 import Toast from "react-native-toast-message";
-import DownloadButton from "../../components/Download/page";
-import UserCount from "../../components/UserCount/page";
-import { useUserRole } from "../../hooks/useUserRole";
+import DownloadButton from "../../../components/Download/page";
+import UserCount from "../../../components/UserCount/page";
+import { useUserRole } from "../../../hooks/useUserRole";
 import styles from "./styles";
 
 export default function Profile() {
   const { setAuth, user } = useAuth();
   const [userEmail, setUserEmail] = useState("");
   const [newRole, setNewRole] = useState<"premium" | "free" | null>(null);
-  const [userName, setUserName] = useState<string>("");
   const [triggerChange, setTriggerChange] = useState(false);
-  const { isAdmin, isPremium, isFree, roleId } = useUserRole();
-
-  useEffect(() => {
-    if (user?.id) {
-      fetchUserName(user.id);
-    }
-  }, [user]);
-
-  const fetchUserName = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from("users")
-        .select("name")
-        .eq("id", userId)
-        .single();
-
-      if (error || !data) {
-        Alert.alert("Erro", "Não foi possível buscar o nome do usuário.");
-        return;
-      }
-
-      setUserName(data.name);
-    } catch (error) {
-      Alert.alert("Erro", "Houve um problema ao buscar o nome.");
-    }
-  };
+  const { isAdmin, isPremium } = useUserRole();
 
   useEffect(() => {
     if (triggerChange && newRole) {
