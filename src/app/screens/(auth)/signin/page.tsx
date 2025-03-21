@@ -129,21 +129,24 @@ export default function Login() {
           )}
         </View>
 
-        <Pressable
-          style={styles.button}
-          onPress={handleSubmit(handleSignIn)}
-          disabled={loading}
-        >
-          <Text style={styles.buttonText}>
-            {loading ? <ActivityIndicator animating={true} /> : "Acessar"}
-          </Text>
-        </Pressable>
-        <Link href="/screens/(auth)/signup/page" style={styles.link}>
-          <Text>Ainda não possui uma conta? Cadastre-se</Text>
-        </Link>
-        <Link href="/screens/(auth)/resetPassword/page" style={styles.link}>
-          <Text>Esqueceu a Senha? Resetar-Senha</Text>
-        </Link>
+        <View style={styles.buttonContainer}>
+          <Link href="/screens/(auth)/resetPassword/page" style={styles.link}>
+            <Text>Esqueceu a senha?</Text>
+          </Link>
+
+          <Pressable
+            style={styles.button}
+            onPress={handleSubmit(handleSignIn)}
+            disabled={loading}
+          >
+            <Text style={styles.buttonText}>
+              {loading ? <ActivityIndicator animating={true} /> : "Acessar"}
+            </Text>
+          </Pressable>
+          <Link href="/screens/(auth)/signup/page" style={styles.link}>
+            <Text>Ainda não possui uma conta? Cadastre-se</Text>
+          </Link>
+        </View>
       </View>
       <Toast />
     </View>
@@ -155,6 +158,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 34,
     backgroundColor: colors.zinc,
+  },
+
+  buttonContainer: {
+    justifyContent: "center",
+    alignItems: "center",
   },
   header: {
     paddingLeft: 14,
@@ -185,8 +193,10 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   link: {
+    fontSize: 16,
     textAlign: "center",
     marginTop: 10,
+    fontWeight: "bold",
   },
   button: {
     backgroundColor: colors.green,

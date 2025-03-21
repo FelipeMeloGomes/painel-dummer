@@ -7,6 +7,7 @@ import { ActivityIndicator, Text, TextInput } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import * as z from "zod";
 import { supabase } from "../../../../lib/supabase";
+import { router } from "expo-router";
 
 const emailSchema = z.object({
   email: z.string().min(5, "O email é obrigatório").email("Email inválido"),
@@ -42,11 +43,20 @@ export default function ResetPassword() {
     setLoading(false);
 
     if (error) {
-      Toast.show({
-        type: "error",
-        text1: "Erro ao enviar o link",
-        text2: translateSupabaseError(error.message),
-      });
+      if (error.message.includes("no user found")) {
+        Toast.show({
+          type: "error",
+          text1: "Email não encontrado",
+          text2:
+            "Não encontramos um usuário com esse email. Verifique e tente novamente.",
+        });
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Erro ao enviar o link",
+          text2: translateSupabaseError(error.message),
+        });
+      }
       return;
     }
 
@@ -55,6 +65,8 @@ export default function ResetPassword() {
       text1: "Email enviado",
       text2: "Confira sua caixa de entrada para redefinir a senha.",
     });
+
+    router.replace("/screens/(auth)/signin/page");
   }
 
   return (
@@ -63,7 +75,7 @@ export default function ResetPassword() {
         <Text style={styles.logoText}>
           Dumer <Text style={{ color: colors.green }}>Sensi</Text>
         </Text>
-        <Text style={styles.slogan}>A melhor sensi para free fire</Text>
+        <Text style={styles.slogan}>Recuperar Senha</Text>
       </View>
 
       <View style={styles.form}>
