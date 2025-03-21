@@ -1,6 +1,5 @@
 import colors from "@/constants/colors";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, router } from "expo-router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";
@@ -9,59 +8,53 @@ import Toast from "react-native-toast-message";
 import * as z from "zod";
 import { supabase } from "../../../../lib/supabase";
 
-const loginSchema = z.object({
+const emailSchema = z.object({
   email: z.string().min(5, "O email é obrigatório").email("Email inválido"),
-  password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
 });
 
-type LoginForm = z.infer<typeof loginSchema>;
+type EmailForm = z.infer<typeof emailSchema>;
 
 function translateSupabaseError(message: string): string {
   const errorMap: Record<string, string> = {
-    "Invalid login credentials":
-      "Credenciais inválidas. Verifique seu email e senha.",
+    "Invalid email address": "Endereço de email inválido.",
     "User not found": "Usuário não encontrado.",
-    "Email not confirmed":
-      "Seu email ainda não foi confirmado. Verifique sua caixa de entrada.",
-    "Password should be at least 6 characters":
-      "A senha deve ter pelo menos 6 caracteres.",
   };
 
   return errorMap[message] || "Ocorreu um erro inesperado. Tente novamente.";
 }
 
-export default function Login() {
+export default function ResetPassword() {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginForm>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<EmailForm>({
+    resolver: zodResolver(emailSchema),
   });
 
   const [loading, setLoading] = useState(false);
-  const [passwordVisible, setPasswordVisible] = useState(false);
 
-  async function handleSignIn({ email, password }: LoginForm) {
+  async function handleResetPassword({ email }: EmailForm) {
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
 
     setLoading(false);
 
     if (error) {
       Toast.show({
         type: "error",
-        text1: "Erro no login",
+        text1: "Erro ao enviar o link",
         text2: translateSupabaseError(error.message),
       });
       return;
     }
 
-    router.replace("/screens/(panel)/profile/page");
+    Toast.show({
+      type: "success",
+      text1: "Email enviado",
+      text2: "Confira sua caixa de entrada para redefinir a senha.",
+    });
   }
 
   return (
@@ -99,51 +92,15 @@ export default function Login() {
           )}
         </View>
 
-        <View>
-          <Text style={styles.label}>Senha</Text>
-          <Controller
-            control={control}
-            name="password"
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                mode="outlined"
-                outlineColor="black"
-                activeOutlineColor="black"
-                placeholder="Digite sua senha"
-                secureTextEntry={passwordVisible}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                left={<TextInput.Icon icon="lock" />}
-                right={
-                  <TextInput.Icon
-                    icon={passwordVisible ? "eye-off" : "eye"}
-                    onPress={() => setPasswordVisible(!passwordVisible)}
-                  />
-                }
-              />
-            )}
-          />
-          {errors.password && (
-            <Text style={styles.errorText}>{errors.password.message}</Text>
-          )}
-        </View>
-
         <Pressable
           style={styles.button}
-          onPress={handleSubmit(handleSignIn)}
+          onPress={handleSubmit(handleResetPassword)}
           disabled={loading}
         >
           <Text style={styles.buttonText}>
-            {loading ? <ActivityIndicator animating={true} /> : "Acessar"}
+            {loading ? <ActivityIndicator animating={true} /> : "Enviar Link"}
           </Text>
         </Pressable>
-        <Link href="/screens/(auth)/signup/page" style={styles.link}>
-          <Text>Ainda não possui uma conta? Cadastre-se</Text>
-        </Link>
-        <Link href="/screens/(auth)/resetPassword/page" style={styles.link}>
-          <Text>Esqueceu a Senha? Resetar-Senha</Text>
-        </Link>
       </View>
       <Toast />
     </View>
@@ -183,10 +140,6 @@ const styles = StyleSheet.create({
   label: {
     color: colors.zinc,
     marginBottom: 4,
-  },
-  link: {
-    textAlign: "center",
-    marginTop: 10,
   },
   button: {
     backgroundColor: colors.green,

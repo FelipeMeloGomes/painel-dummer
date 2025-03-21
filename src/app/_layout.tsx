@@ -39,6 +39,10 @@ function MainLayout() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="screens/(auth)/resetPassword/page"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="screens/(panel)/profile/page"
           options={{ headerShown: false }}
         />
