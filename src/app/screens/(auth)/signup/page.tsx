@@ -2,19 +2,14 @@ import colors from "@/constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { Pressable, SafeAreaView, ScrollView, View } from "react-native";
 import { ActivityIndicator, Text, TextInput } from "react-native-paper";
-import {
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  View,
-} from "react-native";
 import Toast from "react-native-toast-message";
 import * as z from "zod";
 import { supabase } from "../../../../lib/supabase";
-import { useState } from "react";
+import styles from "./styles";
 
 const signUpSchema = z.object({
   name: z.string().min(3, "O nome precisa ter pelo menos 3 caracteres"),
@@ -225,65 +220,3 @@ export default function Signup() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 34,
-    backgroundColor: colors.zinc,
-  },
-  header: {
-    paddingLeft: 14,
-    paddingRight: 14,
-  },
-  logoText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: colors.white,
-    marginBottom: 8,
-  },
-  slogan: {
-    fontSize: 34,
-    color: colors.white,
-    marginBottom: 34,
-  },
-  form: {
-    flex: 1,
-    backgroundColor: colors.white,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    paddingTop: 24,
-    paddingLeft: 14,
-    paddingRight: 14,
-  },
-  label: {
-    color: colors.zinc,
-    marginBottom: 4,
-  },
-
-  button: {
-    backgroundColor: colors.green,
-    paddingVertical: 14,
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-    borderRadius: 8,
-    marginTop: 16,
-  },
-  buttonText: {
-    color: colors.white,
-    fontWeight: "bold",
-  },
-  backButton: {
-    backgroundColor: "rgba(255, 255, 255, 0.55)",
-    alignSelf: "flex-start",
-    padding: 8,
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  errorText: {
-    color: "red",
-    fontSize: 12,
-    marginBottom: 8,
-  },
-});

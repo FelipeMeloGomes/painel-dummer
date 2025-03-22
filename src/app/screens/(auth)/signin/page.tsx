@@ -3,11 +3,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, router } from "expo-router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { ActivityIndicator, Text, TextInput } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import * as z from "zod";
 import { supabase } from "../../../../lib/supabase";
+import styles from "./styles";
 
 const loginSchema = z.object({
   email: z.string().min(5, "O email é obrigatório").email("Email inválido"),
@@ -45,23 +46,31 @@ export default function Login() {
   async function handleSignIn({ email, password }: LoginForm) {
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    setLoading(false);
+      if (error) {
+        Toast.show({
+          type: "error",
+          text1: "Erro no login",
+          text2: translateSupabaseError(error.message),
+        });
+        return;
+      }
 
-    if (error) {
+      router.replace("/screens/(panel)/profile/page");
+    } catch (err) {
       Toast.show({
         type: "error",
         text1: "Erro no login",
-        text2: translateSupabaseError(error.message),
+        text2: "Houve um erro ao processar a sua solicitação. Tente novamente.",
       });
-      return;
+    } finally {
+      setLoading(false);
     }
-
-    router.replace("/screens/(panel)/profile/page");
   }
 
   return (
@@ -152,68 +161,3 @@ export default function Login() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 34,
-    backgroundColor: colors.zinc,
-  },
-
-  buttonContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  header: {
-    paddingLeft: 14,
-    paddingRight: 14,
-  },
-  logoText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: colors.white,
-    marginBottom: 8,
-  },
-  slogan: {
-    fontSize: 34,
-    color: colors.white,
-    marginBottom: 34,
-  },
-  form: {
-    flex: 1,
-    backgroundColor: colors.white,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    paddingTop: 24,
-    paddingLeft: 14,
-    paddingRight: 14,
-  },
-  label: {
-    color: colors.zinc,
-    marginBottom: 4,
-  },
-  link: {
-    fontSize: 16,
-    textAlign: "center",
-    marginTop: 10,
-    fontWeight: "bold",
-  },
-  button: {
-    backgroundColor: colors.green,
-    paddingVertical: 14,
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-    borderRadius: 8,
-    marginTop: 16,
-  },
-  buttonText: {
-    color: colors.white,
-    fontWeight: "bold",
-  },
-  errorText: {
-    color: "red",
-    fontSize: 12,
-    marginBottom: 8,
-  },
-});
