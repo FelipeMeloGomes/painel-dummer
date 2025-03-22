@@ -1,4 +1,5 @@
 import colors from "@/constants/colors";
+import { translateSupabaseError } from "@/constants/translate";
 import { Ionicons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
@@ -9,32 +10,10 @@ import { ActivityIndicator, Text, TextInput } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import * as z from "zod";
 import { supabase } from "../../../../lib/supabase";
+import { signUpSchema } from "../../../../schemas/validationSchema";
 import styles from "./styles";
 
-const signUpSchema = z.object({
-  name: z.string().min(3, "O nome precisa ter pelo menos 3 caracteres"),
-  email: z.string().email("Email inválido"),
-  password: z.string().min(6, "A senha precisa ter pelo menos 6 caracteres"),
-});
-
 type SignUpForm = z.infer<typeof signUpSchema>;
-
-function translateSupabaseError(message: string): string {
-  const errorMap: Record<string, string> = {
-    "Invalid login credentials":
-      "Credenciais inválidas. Verifique seu email e senha.",
-    "User not found": "Usuário não encontrado.",
-    "Email not confirmed":
-      "Seu email ainda não foi confirmado. Verifique sua caixa de entrada.",
-    "Password should be at least 6 characters":
-      "A senha deve ter pelo menos 6 caracteres.",
-    "Email already taken": "Este email já está em uso.",
-    "Weak password": "A senha é muito fraca. Use uma senha mais forte.",
-    "Invalid email format": "Formato de email inválido.",
-  };
-
-  return errorMap[message] || "Ocorreu um erro inesperado. Tente novamente.";
-}
 
 export default function Signup() {
   const {

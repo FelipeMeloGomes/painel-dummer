@@ -1,4 +1,5 @@
 import colors from "@/constants/colors";
+import { translateSupabaseError } from "@/constants/translate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -8,22 +9,10 @@ import { ActivityIndicator, Text, TextInput } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import * as z from "zod";
 import { supabase } from "../../../../lib/supabase";
+import { emailSchema } from "../../../../schemas/validationSchema";
 import styles from "./styles";
 
-const emailSchema = z.object({
-  email: z.string().min(5, "O email é obrigatório").email("Email inválido"),
-});
-
 type EmailForm = z.infer<typeof emailSchema>;
-
-function translateSupabaseError(message: string): string {
-  const errorMap: Record<string, string> = {
-    "Invalid email address": "Endereço de email inválido.",
-    "User not found": "Usuário não encontrado.",
-  };
-
-  return errorMap[message] || "Ocorreu um erro inesperado. Tente novamente.";
-}
 
 export default function ResetPassword() {
   const {
@@ -119,5 +108,3 @@ export default function ResetPassword() {
     </View>
   );
 }
-
-
