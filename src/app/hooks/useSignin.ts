@@ -9,50 +9,25 @@ interface LoginForm {
   password: string;
 }
 
-const MAX_ATTEMPTS = 5;
-const LOCK_TIME = 30 * 60 * 1000;
-
 function useSignin() {
   const [loading, setLoading] = useState(false);
-  const [attempts, setAttempts] = useState(0);
-  const [lockoutTime, setLockoutTime] = useState<number | null>(null);
 
   const handleSignIn = async ({ email, password }: LoginForm) => {
-    if (lockoutTime && Date.now() < lockoutTime) {
-      const timeLeft = Math.ceil((lockoutTime - Date.now()) / 1000);
-      Toast.show({
-        type: "error",
-        text1: "Conta bloqueada",
-        text2: `Tente novamente em ${timeLeft} segundos.`,
-      });
-      return;
-    }
-
-    if (attempts >= MAX_ATTEMPTS) {
-      setLockoutTime(Date.now() + LOCK_TIME);
-      Toast.show({
-        type: "error",
-        text1: "Muitas tentativas",
-        text2: "Você atingiu o número máximo de tentativas.",
-      });
-      return;
-    }
-
     setLoading(true);
 
     try {
       const { data: existingSession } = await supabase.auth.getSession();
 
-      if (existingSession) {
+      if (existingSession.session) {
         await supabase.auth.signOut();
       }
+
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) {
-        setAttempts(attempts + 1);
         Toast.show({
           type: "error",
           text1: "Erro no login",
@@ -61,7 +36,6 @@ function useSignin() {
         return;
       }
 
-      setAttempts(0);
       router.replace("/screens/(panel)/profile/page");
     } catch (err) {
       Toast.show({
