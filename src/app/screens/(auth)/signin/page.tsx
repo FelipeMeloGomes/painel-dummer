@@ -1,20 +1,20 @@
 import colors from "@/constants/colors";
-import { translateSupabaseError } from "@/constants/translate";
+import { useSignin } from "@/src/app/hooks/useSignin";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, router } from "expo-router";
+import { Link } from "expo-router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, View } from "react-native";
 import { ActivityIndicator, Text, TextInput } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import * as z from "zod";
-import { supabase } from "../../../../lib/supabase";
-import styles from "./styles";
 import { loginSchema } from "../../../../schemas/validationSchema";
+import styles from "./styles";
 
 type LoginForm = z.infer<typeof loginSchema>;
 
-export default function Login() {
+export default function Signin() {
+  const { loading, handleSignIn } = useSignin();
   const {
     control,
     handleSubmit,
@@ -23,38 +23,7 @@ export default function Login() {
     resolver: zodResolver(loginSchema),
   });
 
-  const [loading, setLoading] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
-
-  async function handleSignIn({ email, password }: LoginForm) {
-    setLoading(true);
-
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        Toast.show({
-          type: "error",
-          text1: "Erro no login",
-          text2: translateSupabaseError(error.message),
-        });
-        return;
-      }
-
-      router.replace("/screens/(panel)/profile/page");
-    } catch (err) {
-      Toast.show({
-        type: "error",
-        text1: "Erro no login",
-        text2: "Houve um erro ao processar a sua solicitação. Tente novamente.",
-      });
-    } finally {
-      setLoading(false);
-    }
-  }
 
   return (
     <View style={styles.container}>

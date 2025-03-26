@@ -1,20 +1,18 @@
 import colors from "@/constants/colors";
-import { translateSupabaseError } from "@/constants/translate";
+import { useResetPassword } from "@/src/app/hooks/useResetPassword";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { router } from "expo-router";
-import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, View } from "react-native";
 import { ActivityIndicator, Text, TextInput } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import * as z from "zod";
-import { supabase } from "../../../../lib/supabase";
 import { emailSchema } from "../../../../schemas/validationSchema";
 import styles from "./styles";
 
 type EmailForm = z.infer<typeof emailSchema>;
 
 export default function ResetPassword() {
+  const { loading, handleResetPassword } = useResetPassword();
   const {
     control,
     handleSubmit,
@@ -22,42 +20,6 @@ export default function ResetPassword() {
   } = useForm<EmailForm>({
     resolver: zodResolver(emailSchema),
   });
-
-  const [loading, setLoading] = useState(false);
-
-  async function handleResetPassword({ email }: EmailForm) {
-    setLoading(true);
-
-    const { error } = await supabase.auth.resetPasswordForEmail(email);
-
-    setLoading(false);
-
-    if (error) {
-      if (error.message.includes("no user found")) {
-        Toast.show({
-          type: "error",
-          text1: "Email não encontrado",
-          text2:
-            "Não encontramos um usuário com esse email. Verifique e tente novamente.",
-        });
-      } else {
-        Toast.show({
-          type: "error",
-          text1: "Erro ao enviar o link",
-          text2: translateSupabaseError(error.message),
-        });
-      }
-      return;
-    }
-
-    Toast.show({
-      type: "success",
-      text1: "Email enviado",
-      text2: "Confira sua caixa de entrada para redefinir a senha.",
-    });
-
-    router.replace("/screens/(auth)/signin/page");
-  }
 
   return (
     <View style={styles.container}>
