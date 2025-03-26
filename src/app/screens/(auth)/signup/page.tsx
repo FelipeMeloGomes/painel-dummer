@@ -1,9 +1,9 @@
 import colors from "@/constants/colors";
 import { useSignup } from "@/src/app/hooks/useSignup";
+import { useTogglePasswordVisibility } from "@/src/app/hooks/useTogglePasswordVisibility";
 import { Ionicons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
-import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, SafeAreaView, ScrollView, View } from "react-native";
 import { ActivityIndicator, Text, TextInput } from "react-native-paper";
@@ -23,8 +23,8 @@ export default function Signup() {
   } = useForm<SignUpForm>({
     resolver: zodResolver(signUpSchema),
   });
-
-  const [passwordVisible, setPasswordVisible] = useState(false);
+  const { passwordVisible, togglePasswordVisibility } =
+    useTogglePasswordVisibility();
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -108,7 +108,7 @@ export default function Signup() {
                     right={
                       <TextInput.Icon
                         icon={passwordVisible ? "eye-off" : "eye"}
-                        onPress={() => setPasswordVisible(!passwordVisible)}
+                        onPress={togglePasswordVisibility}
                       />
                     }
                   />

@@ -1,8 +1,8 @@
 import colors from "@/constants/colors";
 import { useSignin } from "@/src/app/hooks/useSignin";
+import { useTogglePasswordVisibility } from "@/src/app/hooks/useTogglePasswordVisibility";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "expo-router";
-import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, View } from "react-native";
 import { ActivityIndicator, Text, TextInput } from "react-native-paper";
@@ -22,8 +22,8 @@ export default function Signin() {
   } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
   });
-
-  const [passwordVisible, setPasswordVisible] = useState(false);
+  const { passwordVisible, togglePasswordVisibility } =
+    useTogglePasswordVisibility();
 
   return (
     <View style={styles.container}>
@@ -79,7 +79,7 @@ export default function Signin() {
                 right={
                   <TextInput.Icon
                     icon={passwordVisible ? "eye-off" : "eye"}
-                    onPress={() => setPasswordVisible(!passwordVisible)}
+                    onPress={togglePasswordVisibility}
                   />
                 }
               />
