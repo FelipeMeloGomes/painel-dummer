@@ -1,8 +1,9 @@
 import colors from "@/constants/colors";
+import useRoleChange from "@/src/app/hooks/useRoleChange";
+import useSignOut from "@/src/app/hooks/useSignout";
 import { useAuth } from "@/src/context/AuthContext";
-import { supabase } from "@/src/lib/supabase";
-import { useEffect, useState } from "react";
-import { Alert, SafeAreaView, ScrollView, View } from "react-native";
+import { useState } from "react";
+import { SafeAreaView, ScrollView, View } from "react-native";
 import {
   ActivityIndicator,
   Button,
@@ -11,7 +12,6 @@ import {
   Text,
   TextInput,
 } from "react-native-paper";
-import Toast from "react-native-toast-message";
 import DownloadButton from "../../../components/Download/page";
 import UserCount from "../../../components/UserCount/page";
 import { useUserRole } from "../../../hooks/useUserRole";
@@ -21,90 +21,14 @@ export default function Profile() {
   const { setAuth, user } = useAuth();
   const [userEmail, setUserEmail] = useState("");
   const [newRole, setNewRole] = useState<"premium" | "free" | null>(null);
-  const [triggerChange, setTriggerChange] = useState(false);
   const { isAdmin, isPremium } = useUserRole();
-
-  useEffect(() => {
-    if (triggerChange && newRole) {
-      changeUserRole();
-      setTriggerChange(false);
-    }
-  }, [newRole, triggerChange]);
+  const { setRoleChange } = useRoleChange(userEmail, newRole);
+  const { handleSignout } = useSignOut();
 
   const handleRoleChange = (role: "premium" | "free") => {
     setNewRole(role);
-    setTriggerChange(true);
+    setRoleChange(true);
   };
-
-  const changeUserRole = async () => {
-    if (!userEmail || !newRole) {
-      Alert.alert(
-        "Erro",
-        "Por favor, forneça o nome do usuário e o novo papel.",
-      );
-      return;
-    }
-
-    try {
-      const { data, error } = await supabase
-        .from("users")
-        .select("id, role_id")
-        .eq("email", userEmail)
-        .limit(1)
-        .single();
-
-      if (error || !data) {
-        Alert.alert("Erro", "Usuário não encontrado.");
-        return;
-      }
-
-      const userId = data.id;
-      const { data: roleData, error: roleError } = await supabase
-        .from("roles")
-        .select("id")
-        .eq("name", newRole)
-        .single();
-
-      if (roleError || !roleData) {
-        Alert.alert("Erro", "Erro ao buscar a role.");
-        return;
-      }
-
-      const { error: updateError } = await supabase
-        .from("users")
-        .update({ role_id: roleData.id })
-        .eq("id", userId);
-
-      if (updateError) {
-        Alert.alert("Erro", "Erro ao alterar o papel do usuário.");
-        return;
-      }
-
-      Toast.show({
-        position: "bottom",
-        text1: "Sucesso",
-        text2: "O papel do usuário foi alterado com sucesso!",
-      });
-
-      Alert.alert("Sucesso", `O papel do usuário foi alterado com sucesso!`);
-    } catch (error) {
-      Alert.alert("Erro", "Houve um problema ao alterar o papel do usuário.");
-    }
-  };
-
-  async function handleSignout() {
-    const { error } = await supabase.auth.signOut();
-    setAuth(null);
-
-    if (error) {
-      Toast.show({
-        type: "error",
-        position: "bottom",
-        text1: '"Erro", "Erro ao sair da conta, tente mais tarde."',
-      });
-      return;
-    }
-  }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
