@@ -8,7 +8,7 @@ interface EmailForm {
   email: string;
 }
 
-export function useResetPassword() {
+function useResetPassword() {
   const [loading, setLoading] = useState(false);
 
   async function handleResetPassword({ email }: EmailForm) {
@@ -47,3 +47,5 @@ export function useResetPassword() {
 
   return { loading, handleResetPassword };
 }
+
+export default useResetPassword;

@@ -1,6 +1,6 @@
 import colors from "@/constants/colors";
-import { useSignin } from "@/src/app/hooks/useSignin";
-import { useTogglePasswordVisibility } from "@/src/app/hooks/useTogglePasswordVisibility";
+import useSignin from "@/src/app/hooks/useSignin";
+import useTogglePasswordVisibility from "@/src/app/hooks/useTogglePasswordVisibility";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "expo-router";
 import { Controller, useForm } from "react-hook-form";

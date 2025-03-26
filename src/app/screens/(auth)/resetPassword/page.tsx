@@ -1,5 +1,5 @@
 import colors from "@/constants/colors";
-import { useResetPassword } from "@/src/app/hooks/useResetPassword";
+import useResetPassword from "@/src/app/hooks/useResetPassword";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, View } from "react-native";

@@ -10,7 +10,7 @@ interface SignupForm {
   password: string;
 }
 
-export function useSignup() {
+function useSignup() {
   const [loading, setLoading] = useState(false);
 
   async function handleSignUp({ name, email, password }: SignupForm) {
@@ -77,3 +77,5 @@ export function useSignup() {
   }
   return { handleSignUp, loading };
 }
+
+export default useSignup;

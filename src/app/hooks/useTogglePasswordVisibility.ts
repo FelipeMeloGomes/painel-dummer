@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export function useTogglePasswordVisibility() {
+function useTogglePasswordVisibility() {
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   function togglePasswordVisibility() {
@@ -9,3 +9,5 @@ export function useTogglePasswordVisibility() {
 
   return { passwordVisible, togglePasswordVisibility };
 }
+
+export default useTogglePasswordVisibility;

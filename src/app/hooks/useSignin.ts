@@ -9,7 +9,7 @@ interface LoginForm {
   password: string;
 }
 
-export function useSignin() {
+function useSignin() {
   const [loading, setLoading] = useState(false);
   async function handleSignIn({ email, password }: LoginForm) {
     setLoading(true);
@@ -43,3 +43,5 @@ export function useSignin() {
 
   return { loading, handleSignIn };
 }
+
+export default useSignin;

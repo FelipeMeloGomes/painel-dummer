@@ -1,6 +1,6 @@
 import colors from "@/constants/colors";
-import { useSignup } from "@/src/app/hooks/useSignup";
-import { useTogglePasswordVisibility } from "@/src/app/hooks/useTogglePasswordVisibility";
+import useSignup from "@/src/app/hooks/useSignup";
+import useTogglePasswordVisibility from "@/src/app/hooks/useTogglePasswordVisibility";
 import { Ionicons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
