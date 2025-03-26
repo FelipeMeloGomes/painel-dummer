@@ -3,7 +3,14 @@ import { useAuth } from "@/src/context/AuthContext";
 import { supabase } from "@/src/lib/supabase";
 import { useEffect, useState } from "react";
 import { Alert, SafeAreaView, ScrollView, View } from "react-native";
-import { Button, Card, Chip, Text, TextInput } from "react-native-paper";
+import {
+  ActivityIndicator,
+  Button,
+  Card,
+  Chip,
+  Text,
+  TextInput,
+} from "react-native-paper";
 import Toast from "react-native-toast-message";
 import DownloadButton from "../../../components/Download/page";
 import UserCount from "../../../components/UserCount/page";
@@ -167,14 +174,22 @@ export default function Profile() {
               </>
             )}
             <Card style={styles.containerBtn}>
-              {isAdmin ? (
-                <>
-                  <DownloadButton userRole="premium" />
-                  <DownloadButton userRole="free" />
-                </>
+              {user ? (
+                isAdmin ? (
+                  <>
+                    <DownloadButton userRole="premium" userId={user.id} />
+                    <DownloadButton userRole="free" userId={user.id} />
+                  </>
+                ) : (
+                  <DownloadButton
+                    userRole={isPremium ? "premium" : "free"}
+                    userId={user.id}
+                  />
+                )
               ) : (
-                <DownloadButton userRole={isPremium ? "premium" : "free"} />
+                <ActivityIndicator size="large" />
               )}
+
               <Button
                 icon="logout"
                 mode="contained-tonal"

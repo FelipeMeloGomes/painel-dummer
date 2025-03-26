@@ -1,24 +1,60 @@
 import APK_URLS from "@/constants/apkLinks";
 import colors from "@/constants/colors";
+import { supabase } from "@/src/lib/supabase";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Platform, StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
 import Toast from "react-native-toast-message";
 
 const APK_NAME = "painel.apk";
+const MAX_DOWNLOADS = 4;
 type UserRole = "premium" | "free" | null;
 
 interface DownloadButtonProps {
   userRole: UserRole;
+  userId: string;
 }
 
-export default function DownloadButton({ userRole }: DownloadButtonProps) {
+export default function DownloadButton({
+  userRole,
+  userId,
+}: DownloadButtonProps) {
   const [progressPercentage, setProgressPercentage] = useState(0);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadCount, setDownloadCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const fetchDownloadCount = async () => {
+      const { data, error } = await supabase
+        .from("users")
+        .select("download_count")
+        .eq("id", userId)
+        .single();
+
+      if (error) {
+        console.error("Erro ao buscar downloads:", error);
+        return;
+      }
+
+      setDownloadCount(data?.download_count ?? 0);
+    };
+
+    fetchDownloadCount();
+  }, [userId]);
 
   async function handleDownload() {
+    if (downloadCount !== null && downloadCount >= MAX_DOWNLOADS) {
+      Alert.alert(
+        "Limite de downloads atingido",
+        "Você já alcançou o limite de downloads.",
+      );
+      return;
+    }
+
     try {
       setIsDownloading(true);
       const fileUri = getDownloadPath();
@@ -29,8 +65,27 @@ export default function DownloadButton({ userRole }: DownloadButtonProps) {
 
       resetDownloadState();
       await installAPK(downloadResponse.uri);
+
+      if (downloadCount !== null) {
+        const newDownloadCount = downloadCount + 1;
+        setDownloadCount(newDownloadCount);
+
+        const { data, error } = await supabase
+          .from("users")
+          .update({ download_count: newDownloadCount })
+          .eq("id", userId);
+
+        if (error) {
+          throw new Error("Erro ao atualizar download_count no Supabase.");
+        } else {
+          console.log("Contagem de downloads atualizada no Supabase:", data);
+        }
+      }
     } catch (error) {
-      handleError("Download Error", "Failed to download APK.");
+      handleError(
+        "Download Error",
+        error instanceof Error ? error.message : "An unknown error occurred.",
+      );
     }
   }
 
