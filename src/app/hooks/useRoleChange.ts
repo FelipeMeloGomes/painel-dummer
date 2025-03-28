@@ -7,59 +7,76 @@ function useRoleChange(userEmail: string, newRole: "premium" | "free" | null) {
 
   useEffect(() => {
     if (triggerChange && newRole) {
-      changeUserRole();
+      handleRoleChange();
       setTriggerChange(false);
     }
   }, [newRole, triggerChange]);
 
-  const changeUserRole = async () => {
+  const handleRoleChange = async () => {
     if (!userEmail || !newRole) {
-      Alert.alert(
-        "Erro",
-        "Por favor, forneça o nome do usuário e o novo papel.",
-      );
+      showAlert("Erro", "Por favor, forneça o nome do usuário e o novo papel.");
       return;
     }
 
     try {
-      const { data, error } = await supabase
-        .from("users")
-        .select("id, role_id")
-        .eq("email", userEmail)
-        .limit(1)
-        .single();
+      const userId = await fetchUserId(userEmail);
+      if (!userId) return;
 
-      if (error || !data) {
-        Alert.alert("Erro", "Usuário não encontrado.");
-        return;
-      }
+      const roleId = await fetchRoleId(newRole);
+      if (!roleId) return;
 
-      const userId = data.id;
-      const { data: roleData, error: roleError } = await supabase
-        .from("roles")
-        .select("id")
-        .eq("name", newRole)
-        .single();
-
-      if (roleError || !roleData) {
-        Alert.alert("Erro", "Erro ao buscar a role.");
-        return;
-      }
-
-      const { error: updateError } = await supabase
-        .from("users")
-        .update({ role_id: roleData.id })
-        .eq("id", userId);
-
-      if (updateError) {
-        Alert.alert("Erro", "Erro ao alterar o papel do usuário.");
-        return;
-      }
-
-      Alert.alert("Sucesso", `O papel do usuário foi alterado com sucesso!`);
+      await updateUserRole(userId, roleId);
+      showAlert("Sucesso", "O papel do usuário foi alterado com sucesso!");
     } catch (error) {
-      Alert.alert("Erro", "Houve um problema ao alterar o papel do usuário.");
+      showAlert("Erro", "Houve um problema ao alterar o papel do usuário.");
     }
+  };
+
+  const fetchUserId = async (email: string): Promise<string | null> => {
+    const { data, error } = await supabase
+      .from("users")
+      .select("id")
+      .eq("email", email)
+      .limit(1)
+      .single();
+
+    if (error || !data) {
+      showAlert("Erro", "Usuário não encontrado.");
+      return null;
+    }
+
+    return data.id;
+  };
+
+  const fetchRoleId = async (roleName: string): Promise<string | null> => {
+    const { data, error } = await supabase
+      .from("roles")
+      .select("id")
+      .eq("name", roleName)
+      .single();
+
+    if (error || !data) {
+      showAlert("Erro", "Erro ao buscar a role.");
+      return null;
+    }
+
+    return data.id;
+  };
+
+  const updateUserRole = async (userId: string, roleId: string) => {
+    const { error } = await supabase
+      .from("users")
+      .update({ role_id: roleId })
+      .eq("id", userId);
+
+    if (error) {
+      showAlert("Erro", "Erro ao alterar o papel do usuário.");
+      throw new Error("Failed to update user role");
+    }
+  };
+
+  const showAlert = (title: string, message: string) => {
+    Alert.alert(title, message);
   };
 
   return { setRoleChange: setTriggerChange };
