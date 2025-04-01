@@ -1,6 +1,6 @@
 import { supabase } from "@/src/lib/supabase";
 import { useEffect, useState } from "react";
-import { Alert } from "react-native";
+import Toast from "react-native-toast-message";
 
 function useRoleChange(userEmail: string, newRole: "premium" | "free" | null) {
   const [triggerChange, setTriggerChange] = useState(false);
@@ -76,7 +76,13 @@ function useRoleChange(userEmail: string, newRole: "premium" | "free" | null) {
   };
 
   const showAlert = (title: string, message: string) => {
-    Alert.alert(title, message);
+    Toast.show({
+      type: "error",
+      position: "top",
+      text1: title,
+      text2: message,
+      visibilityTime: 3000,
+    });
   };
 
   return { setRoleChange: setTriggerChange };

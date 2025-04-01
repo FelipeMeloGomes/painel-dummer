@@ -3,7 +3,7 @@ import { supabase } from "@/src/lib/supabase";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import { useEffect, useState } from "react";
-import { Alert, Platform } from "react-native";
+import { Alert } from "react-native";
 import Toast from "react-native-toast-message";
 
 const APK_NAME = "painel.apk";
@@ -72,8 +72,10 @@ function useDownloadAPK(userRole: UserRole, userId: string) {
       }
     } catch (error) {
       handleError(
-        "Download Error",
-        error instanceof Error ? error.message : "An unknown error occurred.",
+        "Erro de download",
+        error instanceof Error
+          ? error.message
+          : "Ocorreu um erro desconhecido.",
       );
     }
   }
@@ -87,14 +89,6 @@ function useDownloadAPK(userRole: UserRole, userId: string) {
   }
 
   async function installAPK(uri: string) {
-    if (Platform.OS !== "android") {
-      Alert.alert(
-        "Warning",
-        "Automatic installation is only available on Android.",
-      );
-      return;
-    }
-
     try {
       const fileInfo = await FileSystem.getInfoAsync(uri);
       if (!fileInfo.exists) throw new Error("APK file not found.");
@@ -102,7 +96,10 @@ function useDownloadAPK(userRole: UserRole, userId: string) {
         mimeType: "application/vnd.android.package-archive",
       });
     } catch {
-      handleError("Installation Error", "Failed to start APK installation.");
+      handleError(
+        "Erro na Instalação",
+        "Falha ao iniciar a instalação do APK.",
+      );
     }
   }
 
