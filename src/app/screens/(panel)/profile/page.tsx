@@ -12,6 +12,7 @@ import {
   Text,
   TextInput,
 } from "react-native-paper";
+import Toast from "react-native-toast-message";
 import DownloadButton from "../../../components/Download/page";
 import UserCount from "../../../components/UserCount/page";
 import { useUserRole } from "../../../hooks/useUserRole";
@@ -125,6 +126,7 @@ export default function Profile() {
           </Card>
         </View>
       </ScrollView>
+      <Toast />
     </SafeAreaView>
   );
 }
