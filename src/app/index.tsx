@@ -1,7 +1,7 @@
-import { ActivityIndicator, StyleSheet, View } from "react-native";
-import colors from "../../constants/colors";
+import { StyleSheet, View } from "react-native";
+import { ActivityIndicator, PaperProvider } from "react-native-paper";
 import Toast from "react-native-toast-message";
-import { PaperProvider } from "react-native-paper";
+import colors from "../../constants/colors";
 
 export default function Index() {
   return (
