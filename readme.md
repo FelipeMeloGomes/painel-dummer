@@ -1,28 +1,14 @@
-# FM Marketplace
+# FM Dumer
 
-Este é o repositório do **Painel de Controle** do **FM Marketplace**, um sistema administrativo e de usuário comum, desenvolvido com React Native e Expo.
-
-## 📦 Instalação
-
-Antes de começar, certifique-se de ter o **Node.js** instalado em sua máquina.
-
-1. Clone este repositório:
-   ```sh
-   git clone https://github.com/FelipeMeloGomes/FM-Marketplace.git
-   ```
-2. Acesse o diretório do projeto:
-   ```sh
-   cd FM-Marketplace
-   ```
-3. Instale as dependências:
-   ```sh
-   npm install
-   npm install expo-asset
-   ```
+Este é o repositório do Painel de Controle do FM Dumer, um aplicativo onde os usuários podem acessar e baixar um APK, enquanto administradores gerenciam planos de acesso **(Free e Premium)**.
 
 ## ▶️ Executando o projeto
 
 Para rodar o projeto, utilize o seguinte comando:
+
+```sh
+npm install
+```
 
 ```sh
 npx expo start
@@ -33,32 +19,41 @@ Isso abrirá o **Expo Developer Tools**, permitindo rodar o app no simulador/emu
 ## 📱 Tecnologias Utilizadas
 
 - **React Native**
+- **React Native Paper**
+- **React Hook Form**
+- **Zod**
 - **Expo**
 - **TypeScript**
 - **Supabase**
 
 ## 🚀 Funcionalidades
 
-- Painel de controle com separação de cargos (**Administrador** e **Usuário Comum**)
-- Sistema de autenticação via **Supabase**
-- Cadastro e login de usuários
-- Publicação de produtos para venda
-- Integração com banco de dados via **Supabase**
+O projeto conta com as seguintes funcionalidades:
 
-## 🤝 Contribuição
+| 🚀 Funcionalidade                      | ✅ Status       |
+| -------------------------------------- | --------------- |
+| 📌 Cadastro e login de usuários        | ✅ Implementado |
+| 🔑 Autenticação com Supabase           | ✅ Implementado |
+| 🎨 UI otimizada com React Native Paper | ✅ Implementado |
+| 🔄 Atualização de Role por Admin       | ✅ Implementado |
+| 📊 Painel administrativo               | ✅ Implementado |
+| 📥 Contagem de downloads por usuário   | ✅ Implementado |
 
-Sinta-se à vontade para contribuir com o projeto! Para isso:
-1. Faça um fork do repositório
-2. Crie uma branch para sua funcionalidade (`git checkout -b minha-feature`)
-3. Faça commit das suas alterações (`git commit -m 'Adiciona minha funcionalidade'`)
-4. Envie para o repositório remoto (`git push origin minha-feature`)
-5. Abra um Pull Request
+## 📌 Organização e Boas Práticas
 
-## 📜 Licença
+O projeto segue um conjunto de boas práticas para melhorar a organização e manutenção do código:
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+| 📂 Estrutura e Boas Práticas     | ✅ Descrição                                                                                                                 |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 🎨 **Estilos**                   | Todos os estilos estão organizados em arquivos separados dentro da pasta `styles/`, facilitando a manutenção e reutilização. |
+| ⚡ **Hooks**                     | Funções customizadas do React estão organizadas na pasta `hooks/`, promovendo melhor reusabilidade no projeto.               |
+| 📜 **Schemas**                   | Esquemas de dados e validações estão na pasta `schemas/`, garantindo consistência nas regras de validação.                   |
+| 🔄 **Context API**               | Utilizada para gerenciar estados globais de forma eficiente.                                                                 |
+| 🛠️ **Componentes reutilizáveis** | Criados para evitar repetição de código e facilitar a manutenção.                                                            |
+| 📏 **Código organizado**         | Estruturado de forma clara, fácil de entender e manter.                                                                      |
+| 🏷️ **Nomenclatura clara**        | Uso de nomes descritivos para variáveis e funções, tornando o código mais legível.                                           |
+| 📦 **Código modular**            | Divisão em pequenos módulos reutilizáveis para melhor manutenção.                                                            |
 
 ---
 
 Desenvolvido por [Felipe Melo](https://github.com/FelipeMeloGomes) 🚀
-
