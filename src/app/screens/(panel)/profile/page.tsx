@@ -1,4 +1,5 @@
 import InitialsAvatar from "@/src/app/components/Avatar/page";
+import RoleChip from "@/src/app/components/RoleChip/page";
 import useUserProfile from "@/src/app/hooks/useGetUserProfile";
 import useRoleChange from "@/src/app/hooks/useRoleChange";
 import useSignOut from "@/src/app/hooks/useSignout";
@@ -9,9 +10,8 @@ import {
   ActivityIndicator,
   Button,
   Card,
-  Chip,
   Text,
-  TextInput,
+  TextInput
 } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import DownloadButton from "../../../components/Download/page";
@@ -49,9 +49,10 @@ export default function Profile() {
           </View>
 
           <View style={styles.roles}>
-            <Chip mode="outlined" selected={isAdmin || isPremium}>
-              {isAdmin ? "Moderador" : isPremium ? "Premium" : "Free"}
-            </Chip>
+            <RoleChip
+              isAdmin={isAdmin}
+              isPremium={isPremium}
+            />
           </View>
 
           <Card style={styles.buttons}>
