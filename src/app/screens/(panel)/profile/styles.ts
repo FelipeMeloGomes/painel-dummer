@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
   },
 
   userName: {
+    textAlign: "center",
     fontSize: 14,
     fontWeight: "bold",
     color: colors.white,

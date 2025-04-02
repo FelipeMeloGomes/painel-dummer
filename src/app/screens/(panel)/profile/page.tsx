@@ -1,5 +1,5 @@
-import colors from "@/constants/colors";
 import InitialsAvatar from "@/src/app/components/Avatar/page";
+import useUserProfile from "@/src/app/hooks/useGetUserProfile";
 import useRoleChange from "@/src/app/hooks/useRoleChange";
 import useSignOut from "@/src/app/hooks/useSignout";
 import { useAuth } from "@/src/context/AuthContext";
@@ -25,6 +25,7 @@ export default function Profile() {
   const [newRole, setNewRole] = useState<"premium" | "free" | null>(null);
   const { isAdmin, isPremium } = useUserRole();
   const { setRoleChange } = useRoleChange(userEmail, newRole);
+  const { name, loading } = useUserProfile();
   const { handleSignout } = useSignOut();
 
   const handleRoleChange = (role: "premium" | "free") => {
@@ -41,7 +42,9 @@ export default function Profile() {
               <InitialsAvatar />
             </Text>
             <View>
-              <Text style={styles.userName}>{user?.email}</Text>
+              <Text style={styles.userName}>
+                {loading ? "Carregando..." : name}
+              </Text>
             </View>
           </View>
 
@@ -60,6 +63,7 @@ export default function Profile() {
                     <View>
                       <TextInput
                         mode="outlined"
+                        autoCapitalize="none"
                         outlineColor="black"
                         activeOutlineColor="black"
                         label="Email do Usuário"
