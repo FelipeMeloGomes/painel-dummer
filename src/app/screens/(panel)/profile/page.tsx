@@ -1,4 +1,5 @@
 import colors from "@/constants/colors";
+import InitialsAvatar from "@/src/app/components/Avatar/page";
 import useRoleChange from "@/src/app/hooks/useRoleChange";
 import useSignOut from "@/src/app/hooks/useSignout";
 import { useAuth } from "@/src/context/AuthContext";
@@ -36,14 +37,18 @@ export default function Profile() {
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.container}>
           <View style={styles.informations}>
-            <Text style={styles.logoText}>
-              Dumer <Text style={{ color: colors.green }}>Sensi</Text>
+            <Text style={styles.logoAvatar}>
+              <InitialsAvatar />
             </Text>
             <View>
-              <Chip mode="outlined" selected={isAdmin || isPremium}>
-                {isAdmin ? "Moderador" : isPremium ? "Premium" : "Free"}
-              </Chip>
+              <Text style={styles.userName}>{user?.email}</Text>
             </View>
+          </View>
+
+          <View style={styles.roles}>
+            <Chip mode="outlined" selected={isAdmin || isPremium}>
+              {isAdmin ? "Moderador" : isPremium ? "Premium" : "Free"}
+            </Chip>
           </View>
 
           <Card style={styles.buttons}>

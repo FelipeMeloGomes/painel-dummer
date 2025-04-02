@@ -15,6 +15,18 @@ const styles = StyleSheet.create({
     color: colors.white,
     marginBottom: 8,
   },
+  logoAvatar: {
+    justifyContent: "center",
+    textAlign: "center",
+    color: colors.white,
+    marginBottom: 10,
+  },
+
+  userName: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: colors.white,
+  },
   slogan: {
     fontSize: 34,
     color: colors.white,
@@ -22,6 +34,13 @@ const styles = StyleSheet.create({
   },
 
   informations: {
+    marginBottom: 20,
+  },
+
+  roles: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 20,
     marginBottom: 20,
   },
 
