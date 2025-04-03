@@ -1,4 +1,5 @@
 import colors from "@/constants/colors";
+import Header from "@/src/app/components/Header/page";
 import useSignup from "@/src/app/hooks/useSignup";
 import useTogglePasswordVisibility from "@/src/app/hooks/useTogglePasswordVisibility";
 import { Ionicons } from "@expo/vector-icons";
@@ -34,10 +35,11 @@ export default function Signup() {
             <Pressable style={styles.backButton} onPress={() => router.back()}>
               <Ionicons name="arrow-back" size={24} color={colors.white} />
             </Pressable>
-            <Text style={styles.logoText}>
-              Dumer <Text style={{ color: colors.green }}>Sensi</Text>
-            </Text>
-            <Text style={styles.slogan}>Cadastrar Usuário</Text>
+            <Header
+              title="Dumer"
+              highlight="Sensi"
+              slogan="Cadastrar Usuário"
+            />
           </View>
 
           <View style={styles.form}>

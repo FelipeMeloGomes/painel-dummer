@@ -1,8 +1,7 @@
 import { router, Stack } from "expo-router";
-import { AuthProvider, useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
+import { AuthProvider, useAuth } from "../context/AuthContext";
 import { supabase } from "../lib/supabase";
-import { View } from "react-native";
 
 export default function RootLayout() {
   return (
@@ -26,27 +25,17 @@ function MainLayout() {
     });
   }, []);
   return (
-    <View style={{ flex: 1 }}>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="screens/(auth)/signup/page"
-          options={{ headerShown: false }}
-        />
-
-        <Stack.Screen
-          name="screens/(auth)/signin/page"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="screens/(auth)/resetPassword/page"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="screens/(panel)/profile/page"
-          options={{ headerShown: false }}
-        />
-      </Stack>
-    </View>
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        animation: "slide_from_right",
+      }}
+    >
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="screens/(auth)/signup/page" />
+      <Stack.Screen name="screens/(auth)/signin/page" />
+      <Stack.Screen name="screens/(auth)/resetPassword/page" />
+      <Stack.Screen name="screens/(panel)/profile/page" />
+    </Stack>
   );
 }

@@ -1,4 +1,4 @@
-import colors from "@/constants/colors";
+import Header from "@/src/app/components/Header/page";
 import useResetPassword from "@/src/app/hooks/useResetPassword";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
@@ -24,10 +24,7 @@ export default function ResetPassword() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.logoText}>
-          Dumer <Text style={{ color: colors.green }}>Sensi</Text>
-        </Text>
-        <Text style={styles.slogan}>Recuperar Senha</Text>
+        <Header title="Dumer" highlight="Sensi" slogan="Recuperar Senha" />
       </View>
 
       <View style={styles.form}>

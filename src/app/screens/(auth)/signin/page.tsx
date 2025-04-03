@@ -1,4 +1,4 @@
-import colors from "@/constants/colors";
+import Header from "@/src/app/components/Header/page";
 import useSignin from "@/src/app/hooks/useSignin";
 import useTogglePasswordVisibility from "@/src/app/hooks/useTogglePasswordVisibility";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,10 +28,11 @@ export default function Signin() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.logoText}>
-          Dumer <Text style={{ color: colors.green }}>Sensi</Text>
-        </Text>
-        <Text style={styles.slogan}>A melhor sensi para free fire</Text>
+        <Header
+          title="Dumer"
+          highlight="Sensi"
+          slogan="A sensi perfeita para elevar seu jogo no Free Fire!"
+        />
       </View>
 
       <View style={styles.form}>
