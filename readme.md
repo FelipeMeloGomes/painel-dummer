@@ -38,6 +38,7 @@ O projeto conta com as seguintes funcionalidades:
 | 🔄 Atualização de Role por Admin       | ✅ Implementado |
 | 📊 Painel administrativo               | ✅ Implementado |
 | 📥 Contagem de downloads por usuário   | ✅ Implementado |
+| 🛡️ Sistema de licenças                 | ✅ Implementado |
 
 ## 📌 Organização e Boas Práticas
 
