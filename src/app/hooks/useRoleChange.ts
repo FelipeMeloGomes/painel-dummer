@@ -14,7 +14,7 @@ function useRoleChange(userEmail: string, newRole: "premium" | "free" | null) {
 
   const handleRoleChange = async () => {
     if (!userEmail || !newRole) {
-      showAlert("Erro", "Por favor, forneça o nome do usuário e o novo papel.");
+      showAlert("Erro", "Por favor, forneça um email.");
       return;
     }
 
@@ -26,7 +26,12 @@ function useRoleChange(userEmail: string, newRole: "premium" | "free" | null) {
       if (!roleId) return;
 
       await updateUserRole(userId, roleId);
-      showAlert("Sucesso", "O papel do usuário foi alterado com sucesso!");
+      await updateUserLicense(userId, newRole);
+
+      showAlert(
+        "Sucesso",
+        "O papel e a licença do usuário foram alterados com sucesso!",
+      );
     } catch (error) {
       showAlert("Erro", "Houve um problema ao alterar o papel do usuário.");
     }
@@ -37,7 +42,6 @@ function useRoleChange(userEmail: string, newRole: "premium" | "free" | null) {
       .from("users")
       .select("id")
       .eq("email", email)
-      .limit(1)
       .single();
 
     if (error || !data) {
@@ -75,9 +79,44 @@ function useRoleChange(userEmail: string, newRole: "premium" | "free" | null) {
     }
   };
 
+  const updateUserLicense = async (
+    userId: string,
+    role: "premium" | "free",
+  ) => {
+    const expiresAt = role === "premium" ? new Date() : null;
+
+    if (expiresAt) {
+      expiresAt.setDate(expiresAt.getDate() + 30);
+    }
+
+    const { data: existingLicense } = await supabase
+      .from("licenses")
+      .select("id")
+      .eq("user_id", userId)
+      .single();
+
+    if (existingLicense) {
+      await supabase
+        .from("licenses")
+        .update({
+          type: role,
+          expires_at: expiresAt ? expiresAt.toISOString() : null,
+        })
+        .eq("user_id", userId);
+    } else {
+      await supabase.from("licenses").insert([
+        {
+          user_id: userId,
+          type: role,
+          expires_at: expiresAt ? expiresAt.toISOString() : null,
+        },
+      ]);
+    }
+  };
+
   const showAlert = (title: string, message: string) => {
     Toast.show({
-      type: "error",
+      type: title === "Erro" ? "error" : "success",
       position: "top",
       text1: title,
       text2: message,

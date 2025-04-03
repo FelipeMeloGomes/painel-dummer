@@ -11,13 +11,14 @@ import {
   Button,
   Card,
   Text,
-  TextInput
+  TextInput,
 } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import DownloadButton from "../../../components/Download/page";
 import UserCount from "../../../components/UserCount/page";
 import { useUserRole } from "../../../hooks/useUserRole";
 import styles from "./styles";
+import LicenseExpiration from "@/src/app/components/LicenseExpiration/page";
 
 export default function Profile() {
   const { setAuth, user } = useAuth();
@@ -49,10 +50,10 @@ export default function Profile() {
           </View>
 
           <View style={styles.roles}>
-            <RoleChip
-              isAdmin={isAdmin}
-              isPremium={isPremium}
-            />
+            <RoleChip isAdmin={isAdmin} isPremium={isPremium} />
+            <Text>
+              <LicenseExpiration userId={user?.id} />
+            </Text>
           </View>
 
           <Card style={styles.buttons}>
