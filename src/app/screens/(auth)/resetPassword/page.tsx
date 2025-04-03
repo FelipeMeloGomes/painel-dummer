@@ -1,6 +1,9 @@
+import colors from "@/constants/colors";
 import Header from "@/src/app/components/Header/page";
 import useResetPassword from "@/src/app/hooks/useResetPassword";
+import { Ionicons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, View } from "react-native";
 import { ActivityIndicator, Text, TextInput } from "react-native-paper";
@@ -24,6 +27,9 @@ export default function ResetPassword() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        <Pressable style={styles.backButton} onPress={() => router.back()}>
+          <Ionicons name="arrow-back" size={24} color={colors.white} />
+        </Pressable>
         <Header title="Dumer" highlight="Sensi" slogan="Recuperar Senha" />
       </View>
 

@@ -53,6 +53,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 8,
   },
+  backButton: {
+    backgroundColor: "rgba(255, 255, 255, 0.55)",
+    alignSelf: "flex-start",
+    padding: 8,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
 });
 
 export default styles;
