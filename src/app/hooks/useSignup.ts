@@ -42,6 +42,23 @@ function useSignup() {
         return;
       }
 
+      const { error: licenseError } = await supabase.from("licenses").insert([
+        {
+          user_id: user.id,
+          type: "free",
+          expires_at: null,
+        },
+      ]);
+
+      if (licenseError) {
+        Toast.show({
+          type: "error",
+          text1: "Erro ao configurar licença",
+          text2: "Não foi possível criar a licença inicial do usuário.",
+        });
+        return;
+      }
+
       const { error: insertError } = await supabase.from("users").upsert([
         {
           id: user.id,
