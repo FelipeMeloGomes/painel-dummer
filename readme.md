@@ -18,13 +18,14 @@ Isso abrirá o **Expo Developer Tools**, permitindo rodar o app no simulador/emu
 
 ## 📱 Tecnologias Utilizadas
 
-- **React Native**
-- **React Native Paper**
-- **React Hook Form**
-- **Zod**
-- **Expo**
-- **TypeScript**
-- **Supabase**
+- **React Native**: Framework para desenvolvimento de aplicativos móveis nativos utilizando JavaScript e React.
+- **React Native Paper**: Biblioteca de componentes prontos com design baseado no Material Design, ideal para criar interfaces bonitas e responsivas.
+- **React Hook Form**: Biblioteca leve para lidar com formulários de forma simples e eficiente.
+- **Zod**: Biblioteca de validação de dados que se integra muito bem com o React Hook Form.
+- **Expo**: Plataforma que facilita o desenvolvimento, build e deploy de apps em React Native.
+- **TypeScript**: Superset do JavaScript que adiciona tipagem estática ao código, melhorando a confiabilidade e manutenção.
+- **Supabase**: Plataforma backend open source que oferece banco de dados, autenticação e APIs em tempo real.
+- **Brevo**: Utilizado para o envio de e-mails, como confirmações, notificações e recuperação de senha.
 
 ## 🚀 Funcionalidades
 
