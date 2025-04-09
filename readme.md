@@ -1,20 +1,22 @@
-# FM Dumer
+# 📱 FM Dumer – App Mobile com Controle de Planos
 
-Este é o repositório do Painel de Controle do FM Dumer, um aplicativo onde os usuários podem acessar e baixar um APK, enquanto administradores gerenciam planos de acesso **(Free e Premium)**.
+> **Aplicativo mobile com gerenciamento de usuários, planos e licenças**  
+> Criado para permitir o controle de acesso a um APK exclusivo, oferecendo planos **Free** e **Premium**, com foco em segurança, organização e escalabilidade.
 
-## ▶️ Executando o projeto
+---
 
-Para rodar o projeto, utilize o seguinte comando:
+### 🚀 Visão Geral
 
-```sh
-npm install
-```
+O **FM Dumer** é um app mobile desenvolvido em **React Native + Expo**, que oferece uma plataforma onde os usuários podem se cadastrar, fazer login e baixar um APK exclusivo. Por trás, o sistema conta com um **painel administrativo completo**, onde é possível:
 
-```sh
-npx expo start
-```
+- Gerenciar planos de acesso dos usuários (Free/Premium)
+- Controlar licenças com expiração
+- Monitorar contagem de downloads por usuário
+- Alterar permissões com autenticação segura
 
-Isso abrirá o **Expo Developer Tools**, permitindo rodar o app no simulador/emulador ou em um dispositivo físico através do Expo Go.
+> Esse projeto surgiu da necessidade de controlar de forma eficiente a distribuição e o uso de um aplicativo Android, garantindo **segurança**, **controle de acessos** e **flexibilidade para upgrades de plano**.
+
+---
 
 ## 📱 Tecnologias Utilizadas
 
@@ -59,3 +61,8 @@ O projeto segue um conjunto de boas práticas para melhorar a organização e ma
 ---
 
 Desenvolvido por [Felipe Melo](https://github.com/FelipeMeloGomes) 🚀
+
+## 🔗 Conecte-se comigo
+
+[![LinkedIn](https://img.shields.io/badge/-LinkedIn-000?style=for-the-badge&logo=linkedin&logoColor=FF00F6)](https://www.linkedin.com/in/felipemelog/)
+[![Portfólio](https://img.shields.io/badge/-Portfólio-000?style=for-the-badge&logo=vercel&logoColor=FF00F6)](https://portfoliofmg.netlify.app)
